@@ -39,6 +39,66 @@ ISOTOPOS_TATICOS = {
         "meia_vida": 0.0,  # Usa regra dos 7-10
         "desc": "Precipitação radioativa após explosão. Decai rapidamente (Regra dos 7-10)."
     },
+    "Tecnécio-99m (Tc-99m)": {
+        "gama_const": 0.78,
+        "energia": "Baixa (0.140 MeV)",
+        "meia_vida": 0.006,  # 6 horas
+        "desc": "Isótopo médico mais comum. Baixa energia, mas usado em grandes quantidades em hospitais."
+    },
+    "Amerício-241 (Am-241)": {
+        "gama_const": 0.1,
+        "energia": "Baixíssima (0.060 MeV)",
+        "meia_vida": 432.0,  # anos
+        "desc": "Fonte de detecção de fumaça e perfilagem de poços. Gama fraco, mas muito persistente."
+    },
+    "Sódio-24 (Na-24)": {
+        "gama_const": 18.4,
+        "energia": "Muito Alta (1.37 e 2.75 MeV)",
+        "meia_vida": 0.625,  # 15 horas
+        "desc": "Gama extremamente forte. Usado como traçador. Decai rapidamente."
+    },
+    "Rádio-226 (Ra-226)": {
+        "gama_const": 8.25,
+        "energia": "Média-Alta (espectro complexo)",
+        "meia_vida": 1600.0,  # anos
+        "desc": "Fonte órfã histórica. Encontrado em para-raios antigos e relógios vintage. Muito persistente."
+    },
+    "Césio-134 (Cs-134)": {
+        "gama_const": 8.7,
+        "energia": "Média-Alta (0.605 e 0.796 MeV)",
+        "meia_vida": 2.06,  # anos
+        "desc": "Produto de fissão. Mais energético que Cs-137, mas decai mais rápido."
+    },
+    "Antimônio-124 (Sb-124)": {
+        "gama_const": 9.8,
+        "energia": "Alta (0.603 a 2.09 MeV)",
+        "meia_vida": 0.164,  # 60 dias
+        "desc": "Gama de alta energia. Usado em fontes de nêutrons e start-up de reatores."
+    },
+    "Európio-152 (Eu-152)": {
+        "gama_const": 5.8,
+        "energia": "Média (espectro complexo)",
+        "meia_vida": 13.5,  # anos
+        "desc": "Fonte de calibração com múltiplas energias. Comum em laboratórios."
+    },
+    "Manganês-54 (Mn-54)": {
+        "gama_const": 4.7,
+        "energia": "Média (0.835 MeV)",
+        "meia_vida": 0.855,  # 312 dias
+        "desc": "Produto de ativação em aços de reatores. Pode ser encontrado em sucata radioativa."
+    },
+    "Selênio-75 (Se-75)": {
+        "gama_const": 2.0,
+        "energia": "Média-Baixa (0.121 a 0.401 MeV)",
+        "meia_vida": 0.329,  # 120 dias
+        "desc": "Substituto moderno do Irídio-192 para gamagrafia. Menor energia, mais seguro."
+    },
+    "Zinco-65 (Zn-65)": {
+        "gama_const": 2.7,
+        "energia": "Média (1.115 MeV)",
+        "meia_vida": 0.668,  # 244 dias
+        "desc": "Emissor gama duro. Usado em estudos de desgaste de ligas metálicas."
+    },
     "OUTRAS (Entrada Manual)": {
         "gama_const": 5.0,
         "energia": "Média",
@@ -321,63 +381,109 @@ def calcular_risco_combinado(dose_gy, tipo_lesao):
 # 3. INTERFACE VISUAL
 # =============================================================================
 def renderizar():
-    st.markdown("### ☢️ Radiologia Tática e Resposta")
-    st.markdown("Ferramenta de comando para proteção radiológica operacional e gestão de tempo de permanência em zonas quentes.")
+    st.title("Cálculo de Dose Tática")
+    st.markdown("**Ferramenta de Comando para Proteção Radiológica Operacional: Gestão de Tempo de Permanência e Análise de Risco**")
     st.markdown("---")
 
     # --- GUIA DIDÁTICO ---
-    with st.expander("📖 O que é Radiologia Tática?", expanded=True):
+    with st.expander("Fundamentos da Radiologia Tática e Proteção Radiológica Operacional", expanded=True):
         st.markdown("""
         **O Desafio Operacional:**
         
-        Em uma emergência radiológica, você precisa tomar decisões **AGORA**:
-        - Quanto tempo minha equipe pode ficar nesta zona?
-        - Qual a dose que já recebemos?
-        - Quais sintomas devemos esperar?
-        - Esta parede oferece proteção suficiente?
+        Em emergências radiológicas, decisões críticas devem ser tomadas imediatamente:
+        - Quanto tempo a equipe pode permanecer na zona de risco sem exceder limites de dose?
+        - Qual a dose acumulada que já foi recebida?
+        - Quais sintomas devem ser esperados baseados na dose recebida?
+        - A blindagem disponível oferece proteção adequada?
         
-        **Dose Acumulada vs Taxa de Dose:**
-        - **Taxa de Dose (mSv/h):** Quanto radiação você recebe POR HORA
-        - **Dose Total (mSv):** Quanto você recebeu no TOTAL (acumulado)
-        - **Fórmula:** Dose Total = Taxa × Tempo
+        **Conceitos Fundamentais:**
         
-        **Regra dos 7-10 (Fallout):**
-        Após uma explosão nuclear, o fallout decai rapidamente:
-        - **H+1h:** Taxa inicial (ex: 100 mSv/h)
-        - **H+7h:** Taxa cai para 10 mSv/h (÷10)
-        - **H+49h:** Taxa cai para 1 mSv/h (÷100)
-        - **H+343h:** Taxa cai para 0.1 mSv/h (÷1000)
+        1. **Taxa de Dose (mSv/h):** Quantidade de radiação recebida por unidade de tempo (por hora).
+           É uma medida instantânea do risco no momento.
         
-        **Efeito Combinado (Combined Injury):**
-        Vítimas com radiação + queimadura/trauma têm risco **MUITO MAIOR**.
-        Uma dose que seria recuperável pode se tornar fatal se houver lesão adicional.
+        2. **Dose Total Acumulada (mSv):** Quantidade total de radiação recebida ao longo do tempo.
+           É a soma de todas as exposições. Fórmula: **Dose Total = Taxa × Tempo**
+        
+        3. **Stay Time (Tempo de Permanência):** Tempo máximo que uma pessoa pode permanecer em uma 
+           área antes de atingir um limite de dose predefinido. Calculado como:
+           **Stay Time = (Limite de Dose - Dose Já Recebida) / Taxa de Dose**
+        
+        **Regra dos 7-10 (Decaimento de Fallout):**
+        
+        Após uma explosão nuclear, o fallout radioativo decai rapidamente seguindo uma regra empírica:
+        - **H+1h (1 hora após):** Taxa inicial (exemplo: 100 mSv/h)
+        - **H+7h (7 horas após):** Taxa cai para 1/10 do valor inicial (10 mSv/h)
+        - **H+49h (49 horas após):** Taxa cai para 1/100 do valor inicial (1 mSv/h)
+        - **H+343h (343 horas após):** Taxa cai para 1/1000 do valor inicial (0.1 mSv/h)
+        
+        Esta regra é conservadora e útil para planejamento tático, permitindo estimar quando uma área 
+        se tornará segura para operações prolongadas.
+        
+        **Efeito Combinado (Combined Injury Syndrome):**
+        
+        Vítimas que sofrem exposição à radiação combinada com outras lesões (queimaduras, trauma, 
+        contaminação química) apresentam risco significativamente aumentado. O efeito sinérgico 
+        pode fazer com que uma dose que seria recuperável se torne fatal. Este fenômeno é conhecido 
+        como "Combined Injury Syndrome" e é crítico em cenários de acidentes múltiplos.
+        
+        **Síndrome Aguda da Radiação (ARS - Acute Radiation Syndrome):**
+        
+        A ARS ocorre quando uma pessoa recebe uma dose alta de radiação em um curto período de tempo. 
+        Os sintomas e prognóstico dependem da dose recebida:
+        - **0-0.5 Gy:** Geralmente assintomático, recuperação completa
+        - **0.5-1.0 Gy:** Sintomas leves, recuperação em semanas
+        - **1.0-2.0 Gy:** Sintomas moderados, hospitalização recomendada
+        - **2.0-4.0 Gy:** Sintomas graves, mortalidade 0-50% sem tratamento
+        - **4.0-6.0 Gy:** Sintomas muito graves, mortalidade 50-90% mesmo com tratamento
+        - **>6.0 Gy:** Geralmente letal, mortalidade >90%
+        
+        **Limitações do Modelo:**
+        
+        Este modelo assume condições ideais e não considera:
+        - Variações individuais na sensibilidade à radiação
+        - Efeitos de radiação parcial do corpo (exposição não uniforme)
+        - Efeitos de longo prazo (câncer, doenças crônicas)
+        - Interações complexas com medicamentos ou condições pré-existentes
         """)
 
-    with st.expander("🛡️ Limites de Dose Operacional", expanded=False):
+    with st.expander("Limites de Dose Operacional (CNEN / IAEA)", expanded=False):
         st.markdown("""
-        **CNEN / IAEA - Limites de Dose:**
-        - **Emergência (Salvar Vidas):** 500 mSv - Situação extrema
-        - **Operação de Resgate:** 100 mSv - Resgate de vítimas
-        - **Trabalho Controlado:** 50 mSv - Operação planejada
-        - **Trabalho Rotineiro:** 20 mSv - Operação normal
-        - **Público Geral:** 1 mSv/ano - Limite anual
+        **Limites de Dose para Diferentes Cenários Operacionais:**
+        
+        - **Emergência (Salvar Vidas):** 500 mSv - Situação extrema onde vidas estão em risco imediato.
+          Apenas para operações de salvamento crítico. Requer justificativa documentada.
+        
+        - **Operação de Resgate:** 100 mSv - Resgate de vítimas em emergências. Limite por evento, 
+          não anual. Requer planejamento e monitoramento contínuo.
+        
+        - **Trabalho Controlado:** 50 mSv - Operação planejada em zona controlada. Limite anual típico 
+          para trabalhadores nuclear. Requer dosimetria pessoal e controle de acesso.
+        
+        - **Trabalho Rotineiro:** 20 mSv - Operação normal em instalações nucleares. Limite mensal 
+          típico. Requer monitoramento regular e procedimentos estabelecidos.
+        
+        - **Público Geral:** 1 mSv/ano - Limite anual para população geral. Área deve ser segura 
+          para acesso público sem restrições.
         
         **Stay Time (Tempo de Permanência):**
-        Tempo máximo que você pode ficar antes de atingir o limite.
+        
+        O tempo máximo que uma pessoa pode permanecer em uma área antes de atingir o limite de dose 
+        é calculado considerando a taxa de dose atual e a dose já recebida. Para operações seguras, 
+        sempre mantenha uma margem de segurança e monitore continuamente.
         """)
 
     st.markdown("---")
 
     # --- SEÇÃO 1: CENÁRIO RADIOLÓGICO ---
-    st.subheader("1️⃣ Cenário Radiológico")
+    st.subheader("Cenário Radiológico")
     
     col_cen1, col_cen2 = st.columns(2)
     
     with col_cen1:
         isotopo_nome = st.selectbox(
-            "Fonte Radioativa:",
+            "Fonte Radioativa",
             list(ISOTOPOS_TATICOS.keys()),
-            help="Selecione o isótopo ou tipo de fonte"
+            help="Selecione o isótopo ou tipo de fonte radioativa presente no cenário."
         )
         
         isotopo_dados = ISOTOPOS_TATICOS[isotopo_nome]
@@ -388,7 +494,8 @@ def renderizar():
                 min_value=0.0,
                 value=5.0,
                 step=0.1,
-                key="gama_man"
+                key="gama_man",
+                help="Constante gama do isótopo. Consulte tabelas de referência se necessário."
             )
             isotopo_dados = {
                 "gama_const": gama_const_manual,
@@ -397,19 +504,24 @@ def renderizar():
                 "desc": "Fonte configurada manualmente."
             }
         else:
-            st.info(f"ℹ️ {isotopo_dados['desc']}")
+            st.info(f"**{isotopo_nome}**\n\n**Descrição:** {isotopo_dados['desc']}\n\n"
+                   f"**Energia:** {isotopo_dados['energia']}\n\n"
+                   f"**Meia-vida:** {isotopo_dados['meia_vida']} anos" if isotopo_dados['meia_vida'] > 1 
+                   else f"**Meia-vida:** {isotopo_dados['meia_vida']*365} dias" if isotopo_dados['meia_vida'] > 0.01
+                   else f"**Meia-vida:** {isotopo_dados['meia_vida']*24*60:.1f} horas")
         
         # Tipo de fonte
         tipo_fonte = st.radio(
-            "Tipo de Fonte:",
+            "Tipo de Fonte",
             ["Fonte Pontual", "Fallout Nuclear"],
-            help="Fonte pontual = taxa constante | Fallout = decai com tempo"
+            help="Fonte pontual: taxa constante ao longo do tempo. Fallout: taxa decai rapidamente (Regra dos 7-10)."
         )
         
         is_fallout = (tipo_fonte == "Fallout Nuclear")
         
         if is_fallout:
-            st.warning("⚠️ **FALLOUT DETECTADO:** A taxa de dose decairá rapidamente (Regra dos 7-10).")
+            st.warning("**FALLOUT NUCLEAR DETECTADO:** A taxa de dose decairá rapidamente seguindo a Regra dos 7-10. "
+                      "A cada 7 horas, a taxa cai por um fator de 10.")
     
     with col_cen2:
         if not is_fallout:
@@ -444,7 +556,8 @@ def renderizar():
             )
             taxa_inicial = taxa_dose
         
-        st.markdown(f"**📊 Taxa de Dose Atual:** {taxa_dose:.2f} mSv/h")
+        st.metric("Taxa de Dose Atual", f"{taxa_dose:.2f} mSv/h",
+                 help="Taxa de dose no momento atual, considerando decaimento se aplicável")
         
         # Tempo desde o início (para fallout)
         if is_fallout:
@@ -453,28 +566,30 @@ def renderizar():
                 min_value=0.0,
                 value=1.0,
                 step=0.5,
-                help="H+? (horas após a explosão)"
+                help="Tempo decorrido desde a explosão nuclear (H+? horas). Usado para calcular o decaimento do fallout."
             )
             
             # Recalcular taxa considerando decaimento
             taxa_dose = calcular_taxa_dose_fallout(taxa_inicial, tempo_desde_inicio, usar_regra_7_10=True)
-            st.markdown(f"**📉 Taxa de Dose Atual (com decaimento):** {taxa_dose:.3f} mSv/h")
+            st.metric("Taxa de Dose Atual (com decaimento)", f"{taxa_dose:.3f} mSv/h",
+                     f"Reduzida de {taxa_inicial:.2f} mSv/h",
+                     help="Taxa de dose ajustada pelo decaimento do fallout usando Regra dos 7-10")
 
     st.markdown("---")
 
     # --- SEÇÃO 2: BLINDAGEM E PROTEÇÃO ---
-    st.subheader("2️⃣ Blindagem e Proteção")
+    st.subheader("Blindagem e Proteção")
     
     material_blindagem = st.selectbox(
-        "Material de Proteção Disponível:",
+        "Material de Proteção Disponível",
         list(MATERIAIS_BLINDAGEM.keys()),
-        help="Selecione a blindagem entre você e a fonte"
+        help="Selecione o tipo de blindagem ou proteção disponível entre você e a fonte radioativa."
     )
     
     material_dados = MATERIAIS_BLINDAGEM[material_blindagem]
     
     if material_blindagem != "Nenhuma Blindagem":
-        st.info(f"🛡️ **{material_blindagem}**\n\n{material_dados['desc']}")
+        st.info(f"**{material_blindagem}**\n\n**Descrição:** {material_dados['desc']}")
         
         # Calcular taxa protegida
         # Assumir HVL médio de 6cm para concreto (ajustável)
@@ -487,39 +602,41 @@ def renderizar():
         taxa_protegida = calcular_atenuacao_blindagem(taxa_dose, espessura, hvl_medio)
         fator_reducao = taxa_dose / taxa_protegida if taxa_protegida > 0 else float('inf')
         
-        st.success(f"✅ **Taxa Protegida:** {taxa_protegida:.3f} mSv/h (Redução de {fator_reducao:.1f}x)")
+        st.success(f"**Taxa Protegida:** {taxa_protegida:.3f} mSv/h (Redução de {fator_reducao:.1f}x)")
         
         # Usar taxa protegida para cálculos
         taxa_operacao = taxa_protegida
     else:
         taxa_operacao = taxa_dose
-        st.warning("⚠️ **SEM PROTEÇÃO:** Você está recebendo a dose completa.")
+        st.warning("**SEM PROTEÇÃO:** Você está recebendo a dose completa da fonte. Considere usar blindagem se disponível.")
 
     st.markdown("---")
 
     # --- SEÇÃO 3: OPERAÇÃO E LIMITES ---
-    st.subheader("3️⃣ Operação e Limites de Dose")
+    st.subheader("Operação e Limites de Dose")
     
     col_op1, col_op2 = st.columns(2)
     
     with col_op1:
         tipo_operacao = st.selectbox(
-            "Tipo de Operação:",
+            "Tipo de Operação",
             list(LIMITES_DOSE.keys()),
-            help="Selecione o limite de dose apropriado"
+            help="Selecione o limite de dose apropriado para o tipo de operação planejada."
         )
         
         limite_dados = LIMITES_DOSE[tipo_operacao]
         limite_mSv = limite_dados["dose_max"]
         
-        st.info(f"📋 **{tipo_operacao}**\n\n{limite_dados['desc']}\n\n**Limite:** {limite_mSv} mSv")
+        st.info(f"**{tipo_operacao}**\n\n**Descrição:** {limite_dados['desc']}\n\n"
+               f"**Limite de Dose:** {limite_mSv} mSv")
         
         dose_ja_recebida = st.number_input(
             "Dose Já Recebida (mSv)",
             min_value=0.0,
             value=0.0,
             step=0.1,
-            help="Dose acumulada de operações anteriores"
+            help="Dose acumulada de operações anteriores ou exposições prévias. "
+                 "Importante para calcular o tempo restante disponível."
         )
     
     with col_op2:
@@ -528,7 +645,8 @@ def renderizar():
             min_value=0.0,
             value=1.0,
             step=0.1,
-            help="Quanto tempo você planeja ficar nesta zona"
+            help="Tempo que você planeja permanecer na zona de risco. "
+                 "Usado para calcular a dose que será recebida."
         )
         
         # Calcular dose que será recebida
@@ -539,31 +657,41 @@ def renderizar():
         
         dose_total = dose_ja_recebida + dose_receber
         
-        st.markdown(f"**📊 Dose que Será Recebida:** {dose_receber:.2f} mSv")
-        st.markdown(f"**📊 Dose Total Acumulada:** {dose_total:.2f} mSv")
+        st.metric("Dose que Será Recebida", f"{dose_receber:.2f} mSv",
+                 help="Dose adicional que será recebida durante o tempo de operação planejado")
+        st.metric("Dose Total Acumulada", f"{dose_total:.2f} mSv",
+                 f"{((dose_total/limite_mSv)*100):.1f}% do limite",
+                 delta_color="inverse" if dose_total > limite_mSv else "normal",
+                 help="Dose total acumulada (já recebida + planejada)")
 
     st.markdown("---")
 
     # --- SEÇÃO 4: EFEITO COMBINADO (OPCIONAL) ---
-    st.subheader("4️⃣ Efeito Combinado (Radiação + Lesão Adicional)")
+    st.subheader("Efeito Combinado (Radiação + Lesão Adicional)")
     
     usar_efeito_combinado = st.checkbox(
-        "Avaliar efeito de lesão adicional (queimadura/trauma)",
-        help="Marque se houver vítimas com lesões combinadas"
+        "Avaliar Efeito de Lesão Adicional",
+        help="Marque esta opção se houver vítimas com lesões combinadas (queimaduras, trauma) além da exposição à radiação."
     )
     
     tipo_lesao = None
     if usar_efeito_combinado:
         tipo_lesao = st.selectbox(
-            "Tipo de Lesão Adicional:",
+            "Tipo de Lesão Adicional",
             list(FATORES_LESAO_COMBINADA.keys()),
-            help="Lesão além da exposição à radiação"
+            help="Selecione o tipo de lesão adicional presente. Lesões combinadas aumentam significativamente o risco."
         )
+        
+        if tipo_lesao != "Sem Lesão Adicional":
+            fator_lesao = FATORES_LESAO_COMBINADA[tipo_lesao]
+            st.warning(f"**Lesão Combinada:** {fator_lesao['desc']}\n\n"
+                      f"**Fator de Multiplicação de Risco:** {fator_lesao['fator']:.1f}x\n\n"
+                      f"Esta lesão aumenta o risco equivalente em {fator_lesao['fator']:.1f} vezes.")
 
     st.markdown("---")
 
     # --- BOTÃO DE CÁLCULO ---
-    if st.button("⚡ Calcular Análise Tática", type="primary", use_container_width=True):
+    if st.button("Calcular Análise Tática", type="primary", use_container_width=True):
         st.session_state['rad_tatica_calc'] = True
 
     if st.session_state.get('rad_tatica_calc', False):
@@ -580,7 +708,7 @@ def renderizar():
             dose_total_calc = dose_ja_recebida + (taxa_operacao * tempo_operacao)
         
         st.markdown("---")
-        st.markdown("### 📊 Resultados da Análise Tática")
+        st.markdown("### Resultados da Análise Tática")
         
         # Métricas principais
         col_res1, col_res2, col_res3 = st.columns(3)
@@ -589,23 +717,26 @@ def renderizar():
             "Dose Total Acumulada",
             f"{dose_total_calc:.2f} mSv",
             f"{((dose_total_calc/limite_mSv)*100):.1f}% do limite",
-            delta_color="inverse" if dose_total_calc > limite_mSv else "normal"
+            delta_color="inverse" if dose_total_calc > limite_mSv else "normal",
+            help="Dose total acumulada (já recebida + planejada)"
         )
         
         col_res2.metric(
             "Stay Time (Tempo Máximo)",
             f"{stay_time:.1f} horas",
-            f"{stay_time*60:.0f} minutos"
+            f"{stay_time*60:.0f} minutos",
+            help="Tempo máximo de permanência antes de atingir o limite de dose"
         )
         
         col_res3.metric(
             "Taxa de Dose Operacional",
             f"{taxa_operacao:.3f} mSv/h",
-            "Com blindagem" if material_blindagem != "Nenhuma Blindagem" else "Sem blindagem"
+            "Com blindagem" if material_blindagem != "Nenhuma Blindagem" else "Sem blindagem",
+            help="Taxa de dose considerando blindagem se aplicável"
         )
         
         # Cronômetro Regressivo
-        st.markdown("#### ⏱️ Cronômetro Regressivo de Missão")
+        st.markdown("#### Tempo Restante Disponível")
         
         if stay_time > 0 and stay_time < 1000:
             minutos_restantes = int(stay_time * 60)
@@ -618,56 +749,78 @@ def renderizar():
                 tempo_display = f"{minutos_restantes}min"
             
             if stay_time < 1.0:
-                st.error(f"🚨 **TEMPO CRÍTICO:** Você tem apenas **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv!")
+                st.error(f"**TEMPO CRÍTICO:** Você tem apenas **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv. "
+                        f"Complete apenas tarefas essenciais e saia imediatamente.")
             elif stay_time < 4.0:
-                st.warning(f"⚠️ **ATENÇÃO:** Você tem **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv.")
+                st.warning(f"**ATENÇÃO:** Você tem **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv. "
+                          f"Monitore continuamente e prepare retirada.")
             else:
-                st.success(f"✅ **TEMPO DISPONÍVEL:** Você tem **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv.")
+                st.success(f"**TEMPO DISPONÍVEL:** Você tem **{tempo_display}** restantes antes de atingir o limite de {limite_mSv} mSv. "
+                          f"Operação viável, mas mantenha monitoramento contínuo.")
         else:
-            st.info("ℹ️ **TEMPO ILIMITADO:** A taxa de dose é muito baixa. Operação pode continuar indefinidamente dentro do limite.")
+            st.info("**TEMPO ILIMITADO:** A taxa de dose é muito baixa. Operação pode continuar indefinidamente dentro do limite, "
+                   "mas sempre monitore para mudanças nas condições.")
         
         # Diagnóstico de Segurança
-        st.markdown("#### 🚨 Diagnóstico de Segurança")
+        st.markdown("---")
+        st.markdown("#### Diagnóstico de Segurança")
         
         if dose_total_calc > limite_mSv:
-            st.error(f"🚨 **LIMITE EXCEDIDO:** A dose total ({dose_total_calc:.2f} mSv) excede o limite operacional ({limite_mSv} mSv). "
-                    f"**RETIRADA IMEDIATA DA ZONA!**")
+            st.error(f"**LIMITE EXCEDIDO:** A dose total ({dose_total_calc:.2f} mSv) excede o limite operacional ({limite_mSv} mSv). "
+                    f"**RETIRADA IMEDIATA DA ZONA!** Procure atendimento médico e notifique supervisão.")
         elif dose_total_calc > limite_mSv * 0.8:
-            st.warning(f"⚠️ **APROXIMANDO DO LIMITE:** Dose total ({dose_total_calc:.2f} mSv) está em {((dose_total_calc/limite_mSv)*100):.0f}% do limite. "
-                     f"Monitore continuamente e prepare retirada.")
+            st.warning(f"**APROXIMANDO DO LIMITE:** Dose total ({dose_total_calc:.2f} mSv) está em {((dose_total_calc/limite_mSv)*100):.0f}% do limite. "
+                     f"Monitore continuamente e prepare retirada. Considere reduzir tempo de operação.")
         else:
-            st.success(f"✅ **DENTRO DO LIMITE:** Dose total ({dose_total_calc:.2f} mSv) está dentro do limite operacional ({limite_mSv} mSv).")
+            st.success(f"**DENTRO DO LIMITE:** Dose total ({dose_total_calc:.2f} mSv) está dentro do limite operacional ({limite_mSv} mSv). "
+                      f"Operação viável, mas mantenha monitoramento contínuo.")
         
         # Estimativa de ARS
         st.markdown("---")
-        st.markdown("#### 🏥 Estimativa de Síndrome Aguda da Radiação (ARS)")
+        st.markdown("#### Estimativa de Síndrome Aguda da Radiação (ARS)")
         
         dose_gy = dose_total_calc / 1000.0  # Converter mSv para Gy
         
         ars_resultado = avaliar_ars(dose_gy)
         
         st.markdown(f"**Dose Recebida:** {dose_gy:.3f} Gy ({dose_total_calc:.1f} mSv)")
-        st.markdown(f"**Faixa de Dose:** {list(SINTOMAS_ARS.keys())[list(SINTOMAS_ARS.values()).index(ars_resultado)]}")
+        
+        # Encontrar a faixa de dose (já calculada em ars_resultado, mas vamos exibir a faixa)
+        faixa_dose = None
+        for faixa, dados in SINTOMAS_ARS.items():
+            if dados == ars_resultado:
+                faixa_dose = faixa
+                break
+        if faixa_dose is None:
+            # Buscar por comparação de valores
+            for faixa, dados in SINTOMAS_ARS.items():
+                if dados["dose_min"] <= dose_gy < dados["dose_max"]:
+                    faixa_dose = faixa
+                    break
+        if faixa_dose is None:
+            faixa_dose = ">6.0 Gy (>600 rad)"
+        
+        st.markdown(f"**Faixa de Dose:** {faixa_dose}")
         
         st.markdown(f"**Sintomas Esperados:**")
-        st.info(f"📋 {ars_resultado['sintomas']}")
+        st.info(f"{ars_resultado['sintomas']}")
         
         st.markdown(f"**Prognóstico:**")
         if ars_resultado['cor'] == 'green':
-            st.success(f"✅ {ars_resultado['prognostico']}")
+            st.success(f"{ars_resultado['prognostico']}")
         elif ars_resultado['cor'] == 'orange':
-            st.warning(f"⚠️ {ars_resultado['prognostico']}")
+            st.warning(f"{ars_resultado['prognostico']}")
         else:
-            st.error(f"🚨 {ars_resultado['prognostico']}")
+            st.error(f"{ars_resultado['prognostico']}")
         
         # Efeito Combinado
         if usar_efeito_combinado and tipo_lesao:
             st.markdown("---")
-            st.markdown("#### ⚠️ Análise de Efeito Combinado (Combined Injury)")
+            st.markdown("#### Análise de Efeito Combinado (Combined Injury Syndrome)")
             
             risco_combinado = calcular_risco_combinado(dose_gy, tipo_lesao)
             
-            st.warning(f"🚨 **LESÃO COMBINADA DETECTADA:** {risco_combinado['desc_lesao']}")
+            st.warning(f"**LESÃO COMBINADA DETECTADA:** {risco_combinado['desc_lesao']}")
             
             col_comb1, col_comb2 = st.columns(2)
             
@@ -675,7 +828,8 @@ def renderizar():
                 col_comb1.metric(
                     "Dose Original",
                     f"{risco_combinado['dose_original']:.3f} Gy",
-                    f"{risco_combinado['dose_original']*1000:.1f} mSv"
+                    f"{risco_combinado['dose_original']*1000:.1f} mSv",
+                    help="Dose de radiação recebida"
                 )
             
             with col_comb2:
@@ -683,26 +837,28 @@ def renderizar():
                     "Dose Equivalente (com lesão)",
                     f"{risco_combinado['dose_equivalente']:.3f} Gy",
                     f"Fator: {risco_combinado['fator_multiplicacao']:.1f}x",
-                    delta_color="inverse"
+                    delta_color="inverse",
+                    help="Dose equivalente considerando o efeito sinérgico da lesão adicional"
                 )
             
             st.markdown("**Reavaliação de ARS com Lesão Combinada:**")
             ars_comb = risco_combinado['ars_equivalente']
             
             if ars_comb['cor'] == 'green':
-                st.success(f"✅ {ars_comb['prognostico']}")
+                st.success(f"{ars_comb['prognostico']}")
             elif ars_comb['cor'] == 'orange':
-                st.warning(f"⚠️ {ars_comb['prognostico']}")
+                st.warning(f"{ars_comb['prognostico']}")
             else:
-                st.error(f"🚨 {ars_comb['prognostico']}")
+                st.error(f"{ars_comb['prognostico']}")
             
-            st.error(f"💀 **ALERTA CRÍTICO:** A lesão adicional aumenta o risco em {risco_combinado['fator_multiplicacao']:.1f}x. "
+            st.error(f"**ALERTA CRÍTICO:** A lesão adicional aumenta o risco em {risco_combinado['fator_multiplicacao']:.1f} vezes. "
                     f"Uma dose que seria recuperável ({risco_combinado['dose_original']:.3f} Gy) agora equivale a "
-                    f"{risco_combinado['dose_equivalente']:.3f} Gy. **Tratamento médico imediato obrigatório!**")
+                    f"{risco_combinado['dose_equivalente']:.3f} Gy. **Tratamento médico especializado imediato é obrigatório!**")
         
         # Tabela de Sintomas Prováveis
         st.markdown("---")
-        st.markdown("#### 📋 Tabela de Sintomas Prováveis por Faixa de Dose")
+        st.markdown("#### Tabela de Sintomas Prováveis por Faixa de Dose")
+        st.caption("Tabela de referência mostrando sintomas e prognóstico esperados para diferentes faixas de dose.")
         
         df_sintomas = pd.DataFrame({
             'Faixa de Dose': list(SINTOMAS_ARS.keys()),
@@ -715,7 +871,7 @@ def renderizar():
         # Impacto da Blindagem
         if material_blindagem != "Nenhuma Blindagem":
             st.markdown("---")
-            st.markdown("#### 🛡️ Impacto da Blindagem Improvisada")
+            st.markdown("#### Impacto da Blindagem")
             
             # Comparar com/sem blindagem
             taxa_sem_blindagem = taxa_dose
@@ -730,7 +886,8 @@ def renderizar():
                 col_blind1.metric(
                     "Stay Time SEM Blindagem",
                     f"{stay_time_sem:.1f} horas",
-                    f"{stay_time_sem*60:.0f} min"
+                    f"{stay_time_sem*60:.0f} minutos",
+                    help="Tempo máximo de permanência sem proteção"
                 )
             
             with col_blind2:
@@ -738,15 +895,18 @@ def renderizar():
                     "Stay Time COM Blindagem",
                     f"{stay_time:.1f} horas",
                     f"+{aumento_tempo:.0f}%",
-                    delta_color="normal"
+                    delta_color="normal",
+                    help="Tempo máximo de permanência com blindagem"
                 )
             
-            st.success(f"✅ **BLINDAGEM EFICAZ:** Com {material_blindagem}, seu tempo de operação aumenta de "
-                      f"{stay_time_sem:.1f}h para {stay_time:.1f}h (aumento de {aumento_tempo:.0f}%).")
+            st.success(f"**BLINDAGEM EFICAZ:** Com {material_blindagem}, seu tempo de operação aumenta de "
+                      f"{stay_time_sem:.1f}h para {stay_time:.1f}h (aumento de {aumento_tempo:.0f}%). "
+                      f"A blindagem oferece proteção significativa.")
         
         # Gráfico de Evolução da Dose
         st.markdown("---")
-        st.markdown("#### 📈 Evolução da Dose Acumulada ao Longo do Tempo")
+        st.markdown("#### Evolução da Dose Acumulada ao Longo do Tempo")
+        st.caption("Gráfico mostrando como a dose acumula ao longo do tempo de operação.")
         
         tempos_grafico = np.linspace(0, min(stay_time * 1.2, 24), 100)  # Até 24h ou 1.2x stay time
         
@@ -764,12 +924,13 @@ def renderizar():
             'Limite Operacional': [limite_mSv] * len(tempos_grafico)
         })
         
-        chart = alt.Chart(df_evolucao).mark_line().encode(
+        chart = alt.Chart(df_evolucao).mark_line(size=2).encode(
             x=alt.X('Tempo (horas):Q', title='Tempo de Operação (horas)'),
             y=alt.Y('value:Q', title='Dose Acumulada (mSv)'),
             color=alt.Color('variable:N', 
                           scale=alt.Scale(domain=['Dose Acumulada (mSv)', 'Limite Operacional'],
-                                        range=['blue', 'red'])),
+                                        range=['#3498db', '#e74c3c']),
+                          legend=alt.Legend(title="")),
             strokeDash=alt.condition(
                 alt.datum.variable == 'Limite Operacional',
                 alt.value([5, 5]),
@@ -778,31 +939,85 @@ def renderizar():
         ).transform_fold(
             ['Dose Acumulada (mSv)', 'Limite Operacional'],
             as_=['variable', 'value']
-        ).properties(height=300)
+        ).properties(height=350, title="Evolução da Dose Acumulada")
         
         st.altair_chart(chart, use_container_width=True)
         
-        st.caption("💡 A linha azul mostra a dose acumulada ao longo do tempo. "
+        st.caption("**Interpretação:** A linha azul mostra a dose acumulada ao longo do tempo. "
                   "A linha vermelha tracejada indica o limite operacional. "
-                  "O cruzamento mostra quando você deve sair da zona.")
+                  "O ponto onde as linhas se cruzam representa o momento em que você deve sair da zona.")
         
         # Recomendações
         st.markdown("---")
-        st.markdown("#### 💡 Recomendações Táticas")
+        st.markdown("#### Recomendações Operacionais")
         
         if dose_total_calc > limite_mSv:
-            st.error("🚨 **RETIRADA IMEDIATA:** Você já excedeu o limite. Saia da zona AGORA e procure atendimento médico.")
+            st.error("**RETIRADA IMEDIATA:** Você já excedeu o limite de dose. Saia da zona imediatamente e procure atendimento médico. "
+                    "Notifique supervisão sobre a exposição.")
         elif stay_time < 0.5:
-            st.error("🚨 **TEMPO MUITO LIMITADO:** Menos de 30 minutos restantes. Complete apenas tarefas críticas e saia.")
+            st.error("**TEMPO MUITO LIMITADO:** Menos de 30 minutos restantes. Complete apenas tarefas absolutamente críticas e saia. "
+                    "Não arrisque exposição adicional.")
         elif stay_time < 2.0:
-            st.warning("⚠️ **OPERAÇÃO DE CURTA DURAÇÃO:** Tempo limitado. Priorize tarefas essenciais. Monitore dose continuamente.")
+            st.warning("**OPERAÇÃO DE CURTA DURAÇÃO:** Tempo limitado disponível. Priorize tarefas essenciais. "
+                      "Monitore dose continuamente e prepare retirada antes de atingir o limite.")
         else:
-            st.info("✅ **OPERAÇÃO VIÁVEL:** Tempo suficiente para operação planejada. Mantenha monitoramento contínuo.")
+            st.info("**OPERAÇÃO VIÁVEL:** Tempo suficiente disponível para operação planejada. "
+                   "Mantenha monitoramento contínuo da dose e esteja preparado para retirada se condições mudarem.")
         
         if ars_resultado['cor'] in ['red', 'darkred']:
-            st.error("🚨 **SINTOMAS GRAVES ESPERADOS:** Com esta dose, sintomas severos são prováveis. "
-                    "Hospitalização e tratamento especializado são obrigatórios.")
+            st.error("**SINTOMAS GRAVES ESPERADOS:** Com esta dose, sintomas severos de Síndrome Aguda da Radiação são prováveis. "
+                    "Hospitalização e tratamento especializado são obrigatórios. Procure atendimento médico imediato.")
         
         if usar_efeito_combinado and tipo_lesao and risco_combinado['fator_multiplicacao'] > 2.0:
-            st.error("💀 **RISCO EXTREMO:** Lesão combinada aumenta drasticamente a mortalidade. "
-                    "Tratamento médico especializado imediato é crítico para sobrevivência.")
+            st.error("**RISCO EXTREMO:** Lesão combinada aumenta drasticamente a mortalidade. "
+                    "Tratamento médico especializado imediato é crítico para sobrevivência. "
+                    "Priorize evacuação e tratamento médico sobre outras operações.")
+        
+        # Recomendações adicionais
+        with st.expander("Recomendações Adicionais e Considerações Táticas", expanded=False):
+            st.markdown(f"""
+            **Cenário Analisado:**
+            - **Fonte:** {isotopo_nome}
+            - **Tipo:** {tipo_fonte}
+            - **Taxa de Dose:** {taxa_operacao:.3f} mSv/h (com blindagem: {material_blindagem})
+            - **Limite Operacional:** {limite_mSv} mSv ({tipo_operacao})
+            - **Dose Já Recebida:** {dose_ja_recebida:.2f} mSv
+            - **Dose Total Estimada:** {dose_total_calc:.2f} mSv
+            - **Stay Time:** {stay_time:.1f} horas ({stay_time*60:.0f} minutos)
+            
+            **Ações Recomendadas:**
+            
+            1. **Monitoramento Contínuo:**
+               - Use dosímetros pessoais para todos os membros da equipe
+               - Monitore taxa de dose em tempo real se possível
+               - Registre doses recebidas por cada pessoa
+               - Estabeleça pontos de verificação de dose ao longo da operação
+            
+            2. **Gestão de Tempo:**
+               - Planeje operação para completar antes de atingir 80% do limite
+               - Mantenha margem de segurança (não use todo o stay time disponível)
+               - Implemente sistema de alerta quando aproximar do limite
+               - Prepare rota de saída rápida
+            
+            3. **Proteção:**
+               - Use toda blindagem disponível
+               - Maximize distância da fonte quando possível
+               - Minimize tempo de exposição
+               - Implemente rotação de pessoal se operação for longa
+            
+            4. **Comunicação:**
+               - Mantenha comunicação constante com comando
+               - Reporte mudanças nas condições
+               - Notifique quando aproximar do limite
+               - Documente todas as exposições
+            
+            5. **Preparação Médica:**
+               - Tenha equipe médica preparada para receber vítimas
+               - Prepare tratamento para ARS se doses forem altas
+               - Considere efeito combinado se houver outras lesões
+               - Mantenha contato com centro de tratamento especializado
+            
+            **Importante:** Este modelo fornece estimativas baseadas em condições ideais. Na realidade, fatores como 
+            variações na taxa de dose, geometria da fonte, e condições individuais podem alterar os resultados. 
+            Sempre use medições de campo para validar e ajuste conforme necessário.
+            """)

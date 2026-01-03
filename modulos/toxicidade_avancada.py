@@ -94,6 +94,84 @@ SUBSTANCIAS_TOXICAS = {
         "idlh": 0,  # Não é tóxico, mas pode deslocar O2 em altas concentrações
         "tipo": "asfixiante",
         "desc": "Gás natural. Em altas concentrações, pode deslocar oxigênio."
+    },
+    "Óxido de Etileno": {
+        "idlh": 800,
+        "desc": "Esterilizante hospitalar. Carcinogênico. Extremamente reativo. Pode decompor explosivamente."
+    },
+    "Fosfina (PH3)": {
+        "idlh": 50,
+        "desc": "Gás tóxico usado em fumigação. Extremamente letal. Cheiro de peixe podre ou alho."
+    },
+    "Cloreto de Cianogênio (CNCl)": {
+        "idlh": 5,
+        "desc": "Gás de guerra química. Combina toxicidade do cianeto com irritação do cloro. Extremamente letal."
+    },
+    "Sarin (GB)": {
+        "idlh": 0.1,
+        "desc": "Agente neurotóxico de guerra química. Extremamente letal em doses minúsculas. Inibidor de colinesterase."
+    },
+    "VX (Agente V)": {
+        "idlh": 0.003,
+        "desc": "Agente neurotóxico de guerra química. Um dos mais letais conhecidos. Persistente em superfícies."
+    },
+    "Soman (GD)": {
+        "idlh": 0.05,
+        "desc": "Agente neurotóxico de guerra química. Similar ao sarin, mas mais persistente."
+    },
+    "Tabun (GA)": {
+        "idlh": 0.1,
+        "desc": "Primeiro agente neurotóxico desenvolvido. Inibidor de colinesterase. Extremamente tóxico."
+    },
+    "Mostarda de Enxofre (HD)": {
+        "idlh": 0.7,
+        "desc": "Agente vesicante de guerra química. Causa queimaduras químicas severas. Carcinogênico."
+    },
+    "Lewisita (L)": {
+        "idlh": 0.4,
+        "desc": "Agente vesicante de guerra química. Similar à mostarda, mas com efeito imediato. Contém arsênio."
+    },
+    "Cloropicrina (PS)": {
+        "idlh": 2,
+        "desc": "Agente lacrimogêneo e tóxico. Usado como fumigante. Irritante severo dos pulmões."
+    },
+    "Fosgênio Oxima (CX)": {
+        "idlh": 0.2,
+        "desc": "Agente vesicante de guerra química. Causa queimaduras químicas severas. Efeito imediato."
+    },
+    "Metil Isocianato": {
+        "idlh": 3,
+        "desc": "Extremamente tóxico (Bhopal). Irritante severo. Pode causar edema pulmonar fatal."
+    },
+    "Acroleína": {
+        "idlh": 2,
+        "desc": "Aldeído insaturado. Extremamente irritante e tóxico. Carcinogênico. Usado em síntese química."
+    },
+    "Cianeto de Sódio": {
+        "idlh": 25,
+        "desc": "Sólido que libera HCN em contato com ácidos ou umidade. Extremamente letal. Bloqueia respiração celular."
+    },
+    "Fluoreto de Hidrogênio (HF)": {
+        "idlh": 30,
+        "desc": "Ácido extremamente corrosivo. Penetra tecidos profundamente. Causa queimaduras químicas severas e hipocalcemia."
+    },
+    "Óxido de Nitrogênio (NO)": {
+        "idlh": 100,
+        "desc": "Gás tóxico formado em combustão. Oxida a hemoglobina. Pode formar NO2 mais tóxico."
+    },
+    "Dióxido de Nitrogênio (NO2)": {
+        "idlh": 20,
+        "desc": "Gás marrom-avermelhado. Causa edema pulmonar tardio (12-24h). Muito tóxico para pulmões."
+    },
+    "Óxido Nitroso (N2O)": {
+        "idlh": 0,
+        "tipo": "asfixiante",
+        "desc": "Gás anestésico. Em altas concentrações, desloca oxigênio causando hipóxia."
+    },
+    "Hélio": {
+        "idlh": 0,
+        "tipo": "asfixiante",
+        "desc": "Gás inerte. Desloca oxigênio do ar, causando hipóxia por falta de O2."
     }
 }
 
@@ -121,37 +199,37 @@ APF_NIOSH = {
     "Máscara PFF2 (N95)": {
         "apf": 10,
         "filtros_adequados": ["particula"],
-        "desc": "Respirador descartável com filtro P2/N95. ⚠️ **APENAS PARTÍCULAS** - NÃO protege contra gases/vapores!"
+        "desc": "Respirador descartável com filtro P2/N95. ATENÇÃO: APENAS PARTÍCULAS - NÃO protege contra gases/vapores!"
     },
     "Máscara PFF3 (P100)": {
         "apf": 50,
         "filtros_adequados": ["particula"],
-        "desc": "Respirador descartável de alta eficiência. Filtro P100 remove 99.97% das partículas. ⚠️ **APENAS PARTÍCULAS** - NÃO protege contra gases!"
+        "desc": "Respirador descartável de alta eficiência. Filtro P100 remove 99.97% das partículas. ATENÇÃO: APENAS PARTÍCULAS - NÃO protege contra gases!"
     },
     "Máscara Facial Inteira (Half-Mask)": {
         "apf": 10,
         "filtros_adequados": ["particula", "gas_vapor", "organico", "acido", "amonia"],
-        "desc": "Máscara que cobre nariz e boca. ⚠️ **DEPENDE DO FILTRO QUÍMICO** instalado (cartucho apropriado)."
+        "desc": "Máscara que cobre nariz e boca. ATENÇÃO: DEPENDE DO FILTRO QUÍMICO instalado (cartucho apropriado)."
     },
     "Máscara Facial Inteira (Full-Face)": {
         "apf": 50,
         "filtros_adequados": ["particula", "gas_vapor", "organico", "acido", "amonia"],
-        "desc": "Máscara que cobre rosto inteiro. ⚠️ **DEPENDE DO FILTRO QUÍMICO** instalado (cartucho apropriado)."
+        "desc": "Máscara que cobre rosto inteiro. ATENÇÃO: DEPENDE DO FILTRO QUÍMICO instalado (cartucho apropriado)."
     },
     "Respirador Motorizado (PAPR)": {
         "apf": 25,
         "filtros_adequados": ["particula", "gas_vapor", "organico", "acido", "amonia"],
-        "desc": "Powered Air-Purifying Respirator. ⚠️ **DEPENDE DO FILTRO QUÍMICO** instalado."
+        "desc": "Powered Air-Purifying Respirator. ATENÇÃO: DEPENDE DO FILTRO QUÍMICO instalado."
     },
     "Respirador Autônomo (SCBA)": {
         "apf": 10000,
         "filtros_adequados": ["particula", "gas_vapor", "organico", "acido", "amonia", "asfixiante"],
-        "desc": "Self-Contained Breathing Apparatus. ✅ **PROTEÇÃO TOTAL** - Ar comprimido próprio, independente do ambiente."
+        "desc": "Self-Contained Breathing Apparatus. PROTEÇÃO TOTAL - Ar comprimido próprio, independente do ambiente."
     },
     "Respirador de Linha de Ar": {
         "apf": 1000,
         "filtros_adequados": ["particula", "gas_vapor", "organico", "acido", "amonia", "asfixiante"],
-        "desc": "Supplied Air Respirator. ✅ **PROTEÇÃO TOTAL** - Ar fornecido por mangueira de fonte externa limpa."
+        "desc": "Supplied Air Respirator. PROTEÇÃO TOTAL - Ar fornecido por mangueira de fonte externa limpa."
     }
 }
 
@@ -176,7 +254,26 @@ MAPEAMENTO_TIPO_CONTAMINANTE = {
     "Nitrogênio (N2)": "asfixiante",
     "Dióxido de Carbono (CO2)": "asfixiante",
     "Argônio": "asfixiante",
-    "Metano (CH4)": "asfixiante"
+    "Metano (CH4)": "asfixiante",
+    "Óxido de Etileno": "organico",
+    "Fosfina (PH3)": "gas_vapor",
+    "Cloreto de Cianogênio (CNCl)": "gas_vapor",
+    "Sarin (GB)": "gas_vapor",
+    "VX (Agente V)": "gas_vapor",
+    "Soman (GD)": "gas_vapor",
+    "Tabun (GA)": "gas_vapor",
+    "Mostarda de Enxofre (HD)": "gas_vapor",
+    "Lewisita (L)": "gas_vapor",
+    "Cloropicrina (PS)": "gas_vapor",
+    "Fosgênio Oxima (CX)": "gas_vapor",
+    "Metil Isocianato": "organico",
+    "Acroleína": "organico",
+    "Cianeto de Sódio": "gas_vapor",
+    "Fluoreto de Hidrogênio (HF)": "acido",
+    "Óxido de Nitrogênio (NO)": "gas_vapor",
+    "Dióxido de Nitrogênio (NO2)": "gas_vapor",
+    "Óxido Nitroso (N2O)": "asfixiante",
+    "Hélio": "asfixiante"
 }
 
 # =============================================================================
@@ -327,104 +424,151 @@ def calcular_hipoxia(mistura):
 # 4. INTERFACE VISUAL
 # =============================================================================
 def renderizar():
-    st.markdown("### 🧪 Toxicidade Avançada - Índice de Aditividade")
-    st.markdown("Análise de toxicidade mista e verificação de proteção respiratória (APF/NIOSH).")
+    st.title("Análise de Toxicidade e EPIs")
+    st.markdown("**Análise de Toxicidade Mista: Índice de Aditividade e Verificação de Proteção Respiratória (APF/NIOSH)**")
     st.markdown("---")
 
     # --- GUIA DIDÁTICO ---
-    with st.expander("📖 O que é o Índice de Aditividade?", expanded=True):
+    with st.expander("Fundamentos do Índice de Aditividade", expanded=True):
         st.markdown("""
-        **O Problema:** Em um acidente químico, raramente há apenas UMA substância no ar. 
-        Pode haver uma mistura de gases tóxicos (ex: HCl + Cloro + Amônia).
+        **O Problema da Toxicidade Mista:**
         
-        **A Solução - Índice de Aditividade:**
-        O modelo assume que os efeitos tóxicos são **aditivos**. Se você respira 50% do IDLH de HCl 
-        e 50% do IDLH de Cloro ao mesmo tempo, o risco total é equivalente a 100% do IDLH.
+        Em acidentes químicos reais, raramente há apenas uma substância no ar. Geralmente há uma mistura 
+        de múltiplos gases e vapores tóxicos (exemplo: HCl + Cloro + Amônia + Monóxido de Carbono).
+        
+        **O Modelo de Aditividade:**
+        
+        O Índice de Aditividade assume que os efeitos tóxicos de diferentes substâncias são aditivos 
+        quando presentes simultaneamente. Se você respira 50% do IDLH de HCl e 50% do IDLH de Cloro 
+        ao mesmo tempo, o risco total é equivalente a 100% do IDLH.
         
         **Fórmula Matemática:**
+        
         ```
-        IA = (C₁/IDLH₁) + (C₂/IDLH₂) + (C₃/IDLH₃) + ...
+        IA = Σ (C_i / IDLH_i) = (C₁/IDLH₁) + (C₂/IDLH₂) + (C₃/IDLH₃) + ...
         ```
         
-        **Interpretação:**
-        - **IA < 1.0:** ✅ Ambiente seguro (mesmo com múltiplas substâncias)
-        - **IA = 1.0:** ⚠️ Limite crítico (exatamente no IDLH combinado)
-        - **IA > 1.0:** 🚨 **PERIGO** - Concentração excede o limite seguro
+        Onde:
+        - IA = Índice de Aditividade
+        - C_i = Concentração da substância i (ppm)
+        - IDLH_i = Valor IDLH da substância i (ppm)
+        
+        **Interpretação do Índice:**
+        
+        - **IA < 1.0:** Ambiente seguro (mesmo com múltiplas substâncias, a combinação não excede o limite)
+        - **IA = 1.0:** Limite crítico (exatamente no IDLH combinado)
+        - **IA > 1.0:** PERIGO - A concentração combinada excede o limite seguro
         
         **Exemplo Prático:**
-        - HCl: 25 ppm (IDLH = 50 ppm) → Razão = 0.5
-        - Cloro: 5 ppm (IDLH = 10 ppm) → Razão = 0.5
+        
+        Considere uma mistura com:
+        - HCl: 25 ppm (IDLH = 50 ppm) → Razão = 25/50 = 0.5
+        - Cloro: 5 ppm (IDLH = 10 ppm) → Razão = 5/10 = 0.5
         - **IA Total = 0.5 + 0.5 = 1.0** → Limite crítico!
+        
+        Mesmo que nenhuma substância individualmente exceda seu IDLH, a combinação atinge o limite de segurança.
+        
+        **Limitações do Modelo:**
+        
+        O modelo de aditividade é conservador e assume que não há sinergismo ou antagonismo entre as substâncias. 
+        Em alguns casos, a toxicidade combinada pode ser maior (sinergismo) ou menor (antagonismo) que a soma 
+        dos efeitos individuais. Para substâncias com mecanismos de ação muito diferentes, o modelo pode 
+        subestimar ou superestimar o risco real.
         """)
 
-    with st.expander("🛡️ O que é APF (Assigned Protection Factor)?", expanded=False):
+    with st.expander("Fundamentos do APF (Assigned Protection Factor)", expanded=False):
         st.markdown("""
-        **APF = Fator de Proteção Atribuído (NIOSH)**
+        **O que é APF?**
         
-        O APF indica **quantas vezes** o EPI reduz a concentração que você respira.
+        APF (Assigned Protection Factor) é um fator de proteção atribuído pela NIOSH que indica quantas 
+        vezes o equipamento de proteção respiratória reduz a concentração inalada em relação à concentração 
+        ambiente.
         
-        **Exemplo:**
-        - Ambiente: 500 ppm de Acetona
-        - IDLH da Acetona: 2500 ppm
-        - Sem EPI: Você respira 500 ppm (ainda seguro, mas próximo do limite)
-        - Com PFF2 (APF=10): Você respira 500/10 = **50 ppm** (muito mais seguro!)
-        - Com SCBA (APF=10000): Você respira 500/10000 = **0.05 ppm** (praticamente zero)
+        **Fórmula de Proteção:**
         
-        **Regra de Ouro:**
         ```
         Concentração Protegida = Concentração Ambiente / APF
         ```
         
-        Se a **Concentração Protegida < IDLH**, o EPI é adequado! ✅
+        **Exemplo Prático:**
         
-        **⚠️ IMPORTANTE - Compatibilidade de Filtros:**
-        - **PFF2/PFF3:** Protegem APENAS contra **partículas** (poeira, névoa). 
-          **NÃO protegem contra gases/vapores!**
-        - **Máscaras com Filtros Químicos:** Dependem do **cartucho instalado**.
-          Cada cartucho protege contra tipos específicos (ácidos, orgânicos, amônia, etc.).
-        - **SCBA/Respirador de Linha:** Proteção total (ar próprio), funcionam para tudo.
+        Considere um ambiente com 500 ppm de Acetona (IDLH = 2500 ppm):
+        - **Sem EPI:** Você respira 500 ppm (ainda seguro, mas próximo do limite)
+        - **Com PFF2 (APF=10):** Você respira 500/10 = 50 ppm (muito mais seguro)
+        - **Com SCBA (APF=10000):** Você respira 500/10000 = 0.05 ppm (praticamente zero)
+        
+        **Critério de Adequação:**
+        
+        O EPI é considerado adequado se:
+        ```
+        Concentração Protegida < IDLH
+        ```
+        
+        **IMPORTANTE - Compatibilidade de Filtros:**
+        
+        O APF só se aplica se o filtro for compatível com o tipo de contaminante:
+        
+        - **PFF2/PFF3:** Protegem APENAS contra partículas (poeira, névoa, fumaça). 
+          NÃO protegem contra gases ou vapores!
+        
+        - **Máscaras com Filtros Químicos:** Dependem do cartucho instalado. Cada cartucho protege contra 
+          tipos específicos de contaminantes (ácidos, vapores orgânicos, amônia, etc.). É essencial verificar 
+          a compatibilidade do cartucho com as substâncias presentes.
+        
+        - **SCBA/Respirador de Linha de Ar:** Oferecem proteção total, pois fornecem ar próprio, 
+          independente do ambiente contaminado.
+        
+        **Fonte:** NIOSH 42 CFR Part 84 / OSHA 29 CFR 1910.134
         """)
 
-    with st.expander("💨 O que é Hipóxia (Deslocamento de Oxigênio)?", expanded=False):
+    with st.expander("Hipóxia por Deslocamento de Oxigênio", expanded=False):
         st.markdown("""
         **O Problema dos Gases Asfixiantes:**
         
-        Alguns gases não são tóxicos por si só, mas **deslocam o oxigênio do ar**.
-        Exemplos: Nitrogênio (N₂), Argônio, Dióxido de Carbono (CO₂), Metano (CH₄).
+        Alguns gases não são tóxicos por si só, mas deslocam o oxigênio do ar, causando hipóxia 
+        (deficiência de oxigênio nos tecidos). Exemplos: Nitrogênio (N₂), Argônio, Dióxido de Carbono (CO₂), 
+        Metano (CH₄), Hélio.
         
-        **Como Funciona:**
-        - O ar normal tem **21% de oxigênio** (210.000 ppm)
-        - Se um gás asfixiante ocupa espaço no ar, ele "empurra" o oxigênio para fora
-        - **O₂ Restante = 210.000 ppm - Concentração de Asfixiantes**
+        **Mecanismo Físico:**
         
-        **Limites de Segurança:**
-        - **> 19.5% O₂:** ✅ Seguro
-        - **17-19.5% O₂:** ⚠️ Atenção (sintomas leves)
-        - **< 17% O₂:** 🚨 Perigo (perda de consciência em minutos)
-        - **< 12% O₂:** 💀 Morte por asfixia
+        - O ar normal contém aproximadamente 21% de oxigênio (210.000 ppm)
+        - Quando um gás asfixiante ocupa espaço no ar, ele reduz a fração de oxigênio disponível
+        - **O₂ Restante = 210.000 ppm - Σ(Concentrações de Asfixiantes)**
+        
+        **Limites de Segurança (OSHA/NIOSH):**
+        
+        - **> 19.5% O₂:** Seguro para trabalho normal
+        - **17-19.5% O₂:** Atenção - sintomas leves podem ocorrer (fadiga, tontura)
+        - **14-17% O₂:** Perigo - perda de coordenação, julgamento prejudicado
+        - **10-14% O₂:** Perigo extremo - perda de consciência em minutos
+        - **< 10% O₂:** Morte por asfixia em poucos minutos
         
         **Exemplo Prático:**
-        - Vazamento de Nitrogênio: 50.000 ppm (5%)
-        - O₂ Restante = 210.000 - 50.000 = **160.000 ppm (16%)**
-        - **RISCO DE ASFIXIA!** Mesmo que o N₂ não seja tóxico.
         
-        **Proteção:**
-        Apenas **SCBA** ou **Respirador de Linha de Ar** protegem contra hipóxia, 
-        pois fornecem ar próprio. Filtros purificadores **NÃO funcionam** para asfixiantes!
+        Considere um vazamento de Nitrogênio resultando em 50.000 ppm (5%) no ambiente:
+        - O₂ Restante = 210.000 - 50.000 = 160.000 ppm (16%)
+        - **RISCO DE ASFIXIA!** Mesmo que o N₂ não seja tóxico, a deficiência de oxigênio é letal.
+        
+        **Proteção Contra Hipóxia:**
+        
+        Apenas **SCBA** (Self-Contained Breathing Apparatus) ou **Respirador de Linha de Ar** oferecem 
+        proteção contra hipóxia, pois fornecem ar próprio (ou de fonte externa limpa), independente do 
+        ambiente. Filtros purificadores de ar (PFF2, máscaras com cartuchos) NÃO funcionam para asfixiantes, 
+        pois apenas filtram contaminantes, mas não adicionam oxigênio ao ar ambiente.
         """)
 
     st.markdown("---")
 
     # --- SEÇÃO 1: CONFIGURAÇÃO DA MISTURA ---
-    st.subheader("1️⃣ Configuração da Mistura Química")
+    st.subheader("Configuração da Mistura Química")
     
     num_substancias = st.number_input(
-        "Quantas substâncias estão presentes no ambiente?",
+        "Número de Substâncias no Ambiente",
         min_value=1,
         max_value=5,
         value=2,
         step=1,
-        help="Selecione quantos gases/vapores tóxicos diferentes estão misturados no ar."
+        help="Selecione quantos gases/vapores tóxicos diferentes estão misturados no ar simultaneamente."
     )
 
     mistura = {}
@@ -440,8 +584,8 @@ def renderizar():
             )
             dados = SUBSTANCIAS_TOXICAS[substancia]
             
-            st.caption(f"ℹ️ {dados['desc']}")
-            st.caption(f"📊 IDLH: {dados['idlh']} ppm")
+            st.info(f"**{substancia}**\n\n**Descrição:** {dados['desc']}\n\n"
+                   f"**IDLH:** {dados['idlh']} ppm" if dados['idlh'] > 0 else f"**Tipo:** Asfixiante (desloca O₂)")
             
             concentracao = st.number_input(
                 f"Concentração ({substancia})",
@@ -450,7 +594,7 @@ def renderizar():
                 step=0.1,
                 format="%.2f",
                 key=f"conc_{i}",
-                help=f"Concentração medida no ambiente (em ppm). IDLH desta substância: {dados['idlh']} ppm"
+                help=f"Concentração medida no ambiente (em ppm). IDLH desta substância: {dados['idlh']} ppm" if dados['idlh'] > 0 else "Concentração do gás asfixiante (ppm)"
             )
             
             mistura[substancia] = concentracao
@@ -458,21 +602,21 @@ def renderizar():
     st.markdown("---")
 
     # --- SEÇÃO 2: SELEÇÃO DO EPI ---
-    st.subheader("2️⃣ Equipamento de Proteção Individual (EPI)")
+    st.subheader("Equipamento de Proteção Individual (EPI)")
     
     epi_selecionado = st.selectbox(
-        "Selecione o EPI que será utilizado:",
+        "Tipo de Proteção Respiratória",
         list(APF_NIOSH.keys()),
-        help="Escolha o tipo de proteção respiratória disponível."
+        help="Selecione o tipo de equipamento de proteção respiratória que será utilizado."
     )
     
     dados_epi = APF_NIOSH[epi_selecionado]
-    st.info(f"🛡️ **{epi_selecionado}**\n\nAPF = **{dados_epi['apf']}x**\n\n{dados_epi['desc']}")
+    st.info(f"**{epi_selecionado}**\n\n**APF:** {dados_epi['apf']}x\n\n**Descrição:** {dados_epi['desc']}")
 
     st.markdown("---")
 
     # --- BOTÃO DE CÁLCULO ---
-    if st.button("🧮 Calcular Toxicidade e Verificar Proteção", type="primary", use_container_width=True):
+    if st.button("Calcular Toxicidade e Verificar Proteção", type="primary", use_container_width=True):
         st.session_state['toxicidade_calc'] = True
 
     if st.session_state.get('toxicidade_calc', False):
@@ -491,7 +635,7 @@ def renderizar():
         idlh_minimo = min([SUBSTANCIAS_TOXICAS[s]["idlh"] for s in mistura.keys()])
         
         st.markdown("---")
-        st.markdown("### 📊 Resultados da Análise")
+        st.markdown("### Resultados da Análise")
 
         # --- MÉTRICAS PRINCIPAIS ---
         col1, col2, col3 = st.columns(3)
@@ -530,42 +674,44 @@ def renderizar():
             )
 
         # --- DIAGNÓSTICO DE SEGURANÇA ---
-        st.markdown("#### 🚨 Diagnóstico de Segurança")
+        st.markdown("#### Diagnóstico de Segurança")
         
         if indice_total < 1.0:
-            st.success(f"✅ **AMBIENTE SEGURO (Sem EPI):** O Índice de Aditividade ({indice_total:.3f}) está abaixo de 1.0. "
+            st.success(f"**AMBIENTE SEGURO (Sem EPI):** O Índice de Aditividade ({indice_total:.3f}) está abaixo de 1.0. "
                       f"A mistura de substâncias não excede o limite IDLH combinado. "
-                      f"Entretanto, recomenda-se uso de EPI para operações prolongadas.")
+                      f"Entretanto, recomenda-se uso de EPI para operações prolongadas ou exposição repetida.")
         elif indice_total == 1.0:
-            st.warning(f"⚠️ **LIMITE CRÍTICO:** O Índice de Aditividade é exatamente 1.0. "
+            st.warning(f"**LIMITE CRÍTICO:** O Índice de Aditividade é exatamente 1.0. "
                       f"Você está no limite máximo seguro. **EPI OBRIGATÓRIO!**")
         else:
-            st.error(f"🚨 **PERIGO IMINENTE:** O Índice de Aditividade ({indice_total:.3f}) excede 1.0. "
-                    f"A mistura é **IMEDIATAMENTE PERIGOSA PARA VIDA E SAÚDE**. "
+            st.error(f"**PERIGO IMINENTE:** O Índice de Aditividade ({indice_total:.3f}) excede 1.0. "
+                    f"A mistura é **IMEDIATAMENTE PERIGOSA PARA VIDA E SAÚDE (IDLH)**. "
                     f"**EVACUAÇÃO IMEDIATA** ou uso de **SCBA (APF=10000)** obrigatório!")
 
         # --- TABELA DETALHADA ---
-        st.markdown("#### 📋 Detalhamento por Substância")
+        st.markdown("#### Detalhamento por Substância")
         df_detalhes = pd.DataFrame(detalhes)
-        df_detalhes['Razão (C/IDLH)'] = df_detalhes['Razão (C/IDLH)'].apply(lambda x: f"{x:.4f}")
-        st.dataframe(df_detalhes, use_container_width=True, hide_index=True)
+        # Criar cópia para exibição formatada
+        df_detalhes_display = df_detalhes.copy()
+        df_detalhes_display['Razão (C/IDLH)'] = df_detalhes_display['Razão (C/IDLH)'].apply(lambda x: f"{x:.4f}")
+        st.dataframe(df_detalhes_display, use_container_width=True, hide_index=True)
 
         # --- VERIFICAÇÃO DO EPI ---
         st.markdown("---")
-        st.markdown("#### 🛡️ Verificação de Proteção do EPI")
+        st.markdown("#### Verificação de Proteção do EPI")
         
         # VERIFICAÇÃO 1: Compatibilidade do Filtro Químico
         substancias_incompatíveis = verificar_compatibilidade_filtro(mistura, epi_selecionado)
         
         if substancias_incompatíveis:
-            st.error("🚨 **ALERTA CRÍTICO: FILTRO INADEQUADO!**")
+            st.error("**ALERTA CRÍTICO: FILTRO INADEQUADO!**")
             st.markdown("O EPI selecionado **NÃO protege** contra as seguintes substâncias:")
             
             for item in substancias_incompatíveis:
                 tipo_desc = TIPOS_CONTAMINANTES.get(item["tipo"], item["tipo"])
-                st.warning(f"❌ **{item['substancia']}** ({item['concentracao']:.2f} ppm) - Tipo: {tipo_desc}")
+                st.warning(f"**{item['substancia']}** ({item['concentracao']:.2f} ppm) - Tipo: {tipo_desc}")
             
-            st.markdown("**⚠️ AÇÃO IMEDIATA:**")
+            st.markdown("**AÇÃO IMEDIATA:**")
             if "PFF2" in epi_selecionado or "PFF3" in epi_selecionado:
                 st.error("Filtros PFF2/PFF3 são **APENAS para partículas**. Para gases/vapores, você precisa de:")
                 st.markdown("- Máscara Facial Inteira com **cartucho químico apropriado**")
@@ -574,12 +720,12 @@ def renderizar():
             else:
                 st.error("Verifique se o **cartucho químico** instalado é adequado para estas substâncias!")
         else:
-            st.success("✅ **Filtro Compatível:** O EPI selecionado oferece proteção adequada contra os tipos de contaminantes presentes.")
+            st.success("**Filtro Compatível:** O EPI selecionado oferece proteção adequada contra os tipos de contaminantes presentes.")
         
         st.markdown("---")
         
         # VERIFICAÇÃO 2: Cálculo de Proteção por APF
-        st.markdown("**📊 Análise de Proteção por APF:**")
+        st.markdown("**Análise de Proteção por APF:**")
         
         # Calcular concentração protegida para cada substância
         protecao_detalhada = []
@@ -616,7 +762,7 @@ def renderizar():
                 "Concentração Ambiente (ppm)": f"{concentracao:.2f}",
                 "Concentração Protegida (ppm)": f"{conc_protegida:.4f}" if conc_protegida < concentracao else f"{concentracao:.2f} (SEM PROTEÇÃO)",
                 "IDLH (ppm)": idlh_display,
-                "Proteção Adequada": "✅ Sim" if protecao_adequada else "❌ Não"
+                "Proteção Adequada": "Sim" if protecao_adequada else "Não"
             })
         
         df_protecao = pd.DataFrame(protecao_detalhada)
@@ -630,10 +776,10 @@ def renderizar():
         st.markdown(f"**IDLH Equivalente da Mistura:** {idlh_equiv:.1f} ppm")
         
         if protecao_adequada_geral:
-            st.success(f"✅ **EPI ADEQUADO:** Com {epi_selecionado} (APF={apf_valor}x), a concentração protegida "
+            st.success(f"**EPI ADEQUADO:** Com {epi_selecionado} (APF={apf_valor}x), a concentração protegida "
                       f"({concentracao_protegida_total:.4f} ppm) está abaixo do IDLH equivalente ({idlh_equiv:.1f} ppm).")
         else:
-            st.error(f"❌ **EPI INADEQUADO:** Com {epi_selecionado} (APF={apf_valor}x), a concentração protegida "
+            st.error(f"**EPI INADEQUADO:** Com {epi_selecionado} (APF={apf_valor}x), a concentração protegida "
                     f"({concentracao_protegida_total:.4f} ppm) ainda excede o IDLH equivalente ({idlh_equiv:.1f} ppm). "
                     f"**NECESSÁRIO EPI COM MAIOR APF!**")
 
@@ -642,7 +788,7 @@ def renderizar():
         
         if resultado_hipoxia["asfixiantes_presentes"]:
             st.markdown("---")
-            st.markdown("#### 💨 Análise de Hipóxia (Deslocamento de Oxigênio)")
+            st.markdown("#### Análise de Hipóxia (Deslocamento de Oxigênio)")
             
             st.markdown(f"**Gases Asfixiantes Detectados:**")
             for item in resultado_hipoxia["asfixiantes_presentes"]:
@@ -664,23 +810,24 @@ def renderizar():
                 )
             
             if resultado_hipoxia['hipoxia_detectada']:
-                st.error(f"🚨 **HIPÓXIA DETECTADA:** O oxigênio restante ({resultado_hipoxia['o2_restante_percent']:.2f}%) está abaixo do limite seguro (19.5%). "
-                        f"**RISCO DE ASFIXIA!** Mesmo que as substâncias não sejam tóxicas, a falta de oxigênio pode causar:")
+                st.error(f"**HIPÓXIA DETECTADA:** O oxigênio restante ({resultado_hipoxia['o2_restante_percent']:.2f}%) está abaixo do limite seguro (19.5%). "
+                        f"**RISCO DE ASFIXIA!** Mesmo que as substâncias não sejam tóxicas, a deficiência de oxigênio pode causar:")
                 st.markdown("- Perda de consciência em minutos")
                 st.markdown("- Dano cerebral irreversível")
                 st.markdown("- Morte por asfixia")
-                st.warning("**⚠️ AÇÃO:** Apenas SCBA ou Respirador de Linha de Ar oferecem proteção contra hipóxia!")
+                st.warning("**AÇÃO IMEDIATA:** Apenas SCBA ou Respirador de Linha de Ar oferecem proteção contra hipóxia!")
             elif resultado_hipoxia['o2_restante_percent'] < 20.0:
-                st.warning(f"⚠️ **ATENÇÃO:** O oxigênio está próximo do limite (19.5%). Monitore continuamente. "
+                st.warning(f"**ATENÇÃO:** O oxigênio está próximo do limite (19.5%). Monitore continuamente. "
                           f"Se a concentração de asfixiantes aumentar, o risco de hipóxia se torna crítico.")
             else:
-                st.success(f"✅ **Oxigênio Adequado:** O nível de O2 ({resultado_hipoxia['o2_restante_percent']:.2f}%) está dentro da faixa segura.")
+                st.success(f"**Oxigênio Adequado:** O nível de O₂ ({resultado_hipoxia['o2_restante_percent']:.2f}%) está dentro da faixa segura.")
         
         # --- GRÁFICO VISUAL ---
         st.markdown("---")
-        st.markdown("#### 📈 Visualização do Índice de Aditividade")
+        st.markdown("#### Visualização do Índice de Aditividade")
+        st.caption("Gráfico mostrando a contribuição individual de cada substância para o Índice de Aditividade total.")
         
-        # Preparar dados para o gráfico
+        # Preparar dados para o gráfico (usar valores numéricos originais de detalhes)
         df_grafico = pd.DataFrame({
             'Substância': [d['Substância'] for d in detalhes],
             'Razão (C/IDLH)': [d['Razão (C/IDLH)'] for d in detalhes],
@@ -690,7 +837,8 @@ def renderizar():
         # Verificar se há grande disparidade nas razões (para decidir escala logarítmica)
         razoes = df_grafico['Razão (C/IDLH)'].values
         razao_max = razoes.max()
-        razao_min = razoes[razoes > 0].min() if (razoes > 0).any() else 1.0
+        razoes_positivas = razoes[razoes > 0]
+        razao_min = razoes_positivas.min() if len(razoes_positivas) > 0 else 1.0
         
         # Se a diferença for maior que 100x, usar escala logarítmica
         usar_log = (razao_max / razao_min) > 100 if razao_min > 0 else False
@@ -698,63 +846,75 @@ def renderizar():
         # Gráfico de barras
         if usar_log:
             # Escala logarítmica
-            chart = alt.Chart(df_grafico).mark_bar().encode(
+            chart = alt.Chart(df_grafico).mark_bar(size=40).encode(
                 x=alt.X('Substância:N', title="Substância", sort='-y'),
                 y=alt.Y('Razão (C/IDLH):Q', 
                        title="Razão (Concentração / IDLH) - Escala Logarítmica",
                        scale=alt.Scale(type='log', nice=True)),
                 color=alt.Color('Razão (C/IDLH):Q', 
                               scale=alt.Scale(type='log', domain=[razao_min*0.1, 1, razao_max*10],
-                                            range=['green', 'orange', 'red']),
+                                            range=['#2ecc71', '#f39c12', '#e74c3c']),
                               legend=None),
                 tooltip=['Substância', alt.Tooltip('Razão (C/IDLH)', format='.4f'), 
                         alt.Tooltip('Contribuição (%)', format='.1f')]
-            ).properties(height=300)
+            ).properties(height=300, title="Contribuição Individual para o Índice de Aditividade")
             
-            st.caption("📊 **Escala Logarítmica Ativada:** As concentrações são muito díspares. "
-                      "A escala log permite visualizar todas as substâncias, mesmo as de baixa concentração (mas altamente letais).")
+            st.caption("**Escala Logarítmica Ativada:** As concentrações são muito díspares. "
+                      "A escala logarítmica permite visualizar todas as substâncias, mesmo as de baixa concentração "
+                      "mas com IDLH muito baixo (ex: Fosgênio, agentes de guerra química), que podem ser mais perigosas "
+                      "que outras com alta concentração.")
         else:
             # Escala linear normal
-            chart = alt.Chart(df_grafico).mark_bar().encode(
+            chart = alt.Chart(df_grafico).mark_bar(size=40).encode(
                 x=alt.X('Substância:N', title="Substância", sort='-y'),
                 y=alt.Y('Razão (C/IDLH):Q', title="Razão (Concentração / IDLH)"),
                 color=alt.Color('Razão (C/IDLH):Q', 
                               scale=alt.Scale(domain=[0, 1, max(razoes.max(), 1.5)],
-                                            range=['green', 'orange', 'red']),
+                                            range=['#2ecc71', '#f39c12', '#e74c3c']),
                               legend=None),
-                tooltip=['Substância', 'Razão (C/IDLH)', alt.Tooltip('Contribuição (%)', format='.1f')]
-            ).properties(height=300)
+                tooltip=['Substância', alt.Tooltip('Razão (C/IDLH)', format='.4f'), 
+                        alt.Tooltip('Contribuição (%)', format='.1f')]
+            ).properties(height=300, title="Contribuição Individual para o Índice de Aditividade")
         
         # Linha de referência (IA = 1.0) - apenas se não for log
         if not usar_log:
             linha_limite = alt.Chart(pd.DataFrame({'limite': [1.0]})).mark_rule(
-                color='red', strokeDash=[5, 5], strokeWidth=2
+                color='#e74c3c', strokeDash=[5, 5], strokeWidth=2
             ).encode(y='limite:Q')
             
             # Texto na linha
-            texto_limite = alt.Chart(pd.DataFrame({'x': [len(df_grafico)-1], 'y': [1.0], 'text': ['Limite Crítico (IA=1.0)']})).mark_text(
-                align='left', dx=5, color='red', fontSize=12
+            texto_limite = alt.Chart(pd.DataFrame({
+                'x': [len(df_grafico)-1], 
+                'y': [1.0], 
+                'text': ['Limite Crítico (IA=1.0)']
+            })).mark_text(
+                align='left', dx=5, color='#e74c3c', fontSize=12, fontWeight='bold'
             ).encode(x='x:Q', y='y:Q', text='text:N')
             
             st.altair_chart(chart + linha_limite + texto_limite, use_container_width=True)
         else:
             st.altair_chart(chart, use_container_width=True)
         
-        st.caption("💡 Cada barra mostra a contribuição individual de cada substância para o Índice de Aditividade total. "
-                  "Substâncias com baixa concentração mas IDLH muito baixo (ex: Fosgênio) podem ser mais perigosas que outras com alta concentração.")
+        st.caption("**Interpretação:** Cada barra mostra a contribuição individual de cada substância para o Índice de Aditividade total. "
+                  "Substâncias com baixa concentração mas IDLH muito baixo (ex: Fosgênio, agentes de guerra química) podem ser mais "
+                  "perigosas que outras com alta concentração mas IDLH alto.")
 
         # --- RECOMENDAÇÕES ---
         st.markdown("---")
-        st.markdown("#### 💡 Recomendações Táticas")
+        st.markdown("#### Recomendações Operacionais")
         
         if indice_total < 0.5:
-            st.info("✅ **Situação Controlada:** O ambiente está bem abaixo do limite. "
-                   "EPI básico (PFF2) é suficiente para operações curtas.")
+            st.info("**Situação Controlada:** O ambiente está bem abaixo do limite IDLH. "
+                   "EPI básico (PFF2 para partículas ou máscara com filtro químico apropriado) "
+                   "é suficiente para operações curtas. Monitore continuamente para mudanças nas concentrações.")
         elif indice_total < 1.0:
-            st.info("⚠️ **Atenção:** Embora abaixo do limite, recomenda-se EPI de média proteção "
-                   "(Máscara Facial Inteira ou PAPR) para operações prolongadas.")
+            st.info("**Atenção:** Embora abaixo do limite, recomenda-se EPI de média a alta proteção "
+                   "(Máscara Facial Inteira com filtro químico apropriado ou PAPR) para operações prolongadas. "
+                   "Implemente monitoramento contínuo e limite o tempo de exposição.")
         elif indice_total < 2.0:
-            st.warning("🚨 **Alto Risco:** EPI de alta proteção obrigatório. Considere SCBA ou Respirador de Linha de Ar.")
+            st.warning("**Alto Risco:** EPI de alta proteção obrigatório. Considere SCBA ou Respirador de Linha de Ar. "
+                      "Limite o tempo de exposição ao mínimo necessário. Implemente sistema de monitoramento contínuo.")
         else:
-            st.error("💀 **Extremo Perigo:** Apenas SCBA (APF=10000) oferece proteção adequada. "
-                    "Evacuação imediata recomendada para pessoal não essencial.")
+            st.error("**Extremo Perigo:** Apenas SCBA (APF=10000) oferece proteção adequada. "
+                    "Evacuação imediata recomendada para pessoal não essencial. Apenas pessoal crítico com SCBA "
+                    "deve permanecer na área. Implemente zona de exclusão e sistema de alerta.")

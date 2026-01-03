@@ -8,9 +8,11 @@ import pandas as pd
 # =============================================================================
 # 1. BANCO DE DADOS: SUBSTÂNCIAS INFLAMÁVEIS
 # =============================================================================
-# LFL = Lower Flammability Limit (% vol)
-# UFL = Upper Flammability Limit (% vol)
-# Hc = Calor de Combustão (kJ/kg)
+# Propriedades de combustíveis para análise de Flash Fire
+# Fonte: NFPA 325, CCPS Guidelines, TNO Yellow Book
+# LFL = Lower Flammability Limit (% vol) - Limite Inferior de Inflamabilidade
+# UFL = Upper Flammability Limit (% vol) - Limite Superior de Inflamabilidade
+# Hc = Calor de Combustão (kJ/kg) - Energia liberada na combustão completa
 # MW = Massa Molecular (g/mol)
 # densidade_rel = Densidade relativa ao ar (adimensional)
 SUBSTANCIAS_FLASH = {
@@ -130,33 +132,82 @@ SUBSTANCIAS_FLASH = {
         "lfl": 4.3, "ufl": 46.0, "hc": 15200, "mw": 34.08, "densidade_rel": 1.18,
         "desc": "Gás ácido. Queima emite SO2 tóxico."
     },
+    "Acetato de Butila": {
+        "lfl": 1.2, "ufl": 7.5, "hc": 32000, "mw": 116.16, "densidade_rel": 4.0,
+        "desc": "Solvente de tintas e vernizes. Vapores pesados que se acumulam no chão. Chama amarelada."
+    },
+    "Acrilonitrila": {
+        "lfl": 3.0, "ufl": 17.0, "hc": 31000, "mw": 53.06, "densidade_rel": 1.83,
+        "desc": "Monômero para plásticos. Extremamente inflamável. Queima emite gases tóxicos (cianeto)."
+    },
+    "Éter Dietílico": {
+        "lfl": 1.9, "ufl": 36.0, "hc": 35000, "mw": 74.12, "densidade_rel": 2.56,
+        "desc": "Solvente altamente inflamável. Vapores pesados descem para o chão. Chama azulada."
+    },
+    "Heptano": {
+        "lfl": 1.1, "ufl": 6.7, "hc": 44600, "mw": 100.20, "densidade_rel": 3.46,
+        "desc": "Hidrocarboneto alifático. Componente da gasolina. Queima rápida com chama alta."
+    },
+    "Metil Etil Cetona (MEK)": {
+        "lfl": 1.4, "ufl": 11.4, "hc": 31000, "mw": 72.11, "densidade_rel": 2.48,
+        "desc": "Solvente comum. Similar à acetona, mas mais irritante. Vapores explosivos."
+    },
+    "Octano": {
+        "lfl": 0.95, "ufl": 6.5, "hc": 44400, "mw": 114.23, "densidade_rel": 3.94,
+        "desc": "Componente principal da gasolina. Alta taxa de queima. Chama intensa e quente."
+    },
+    "Pentano": {
+        "lfl": 1.5, "ufl": 7.8, "hc": 45000, "mw": 72.15, "densidade_rel": 2.49,
+        "desc": "Componente da gasolina. Queima rápida. Vapores pesados que rastejam."
+    },
+    "Querosene (Vapores)": {
+        "lfl": 0.7, "ufl": 5.0, "hc": 43000, "mw": 170.0, "densidade_rel": 5.87,
+        "desc": "Combustível de aviação e doméstico. Vapores muito pesados. Chama fuliginosa."
+    },
+    "Tetra-hidrofurano (THF)": {
+        "lfl": 2.0, "ufl": 11.8, "hc": 36000, "mw": 72.11, "densidade_rel": 2.49,
+        "desc": "Solvente de polímeros. Altamente inflamável. Forma peróxidos explosivos se seco."
+    },
+    "Trimetilamina": {
+        "lfl": 2.0, "ufl": 11.6, "hc": 28000, "mw": 59.11, "densidade_rel": 2.04,
+        "desc": "Gás com cheiro de peixe podre. Inflamável. Irritante severo para olhos e vias respiratórias."
+    },
+    "Vinil Acetato": {
+        "lfl": 2.6, "ufl": 13.4, "hc": 21000, "mw": 86.09, "densidade_rel": 2.97,
+        "desc": "Monômero para resinas. Inflamável. Queima emite vapores irritantes."
+    },
     "OUTRAS (Entrada Manual)": {
         "lfl": 0.0, "ufl": 0.0, "hc": 0, "mw": 0, "densidade_rel": 1.0,
         "desc": "Configure manualmente os parâmetros da substância."
     }
 }
 
-# Limites de Dose Térmica (kJ/m²) - TNO / Eisenberg
+# =============================================================================
+# LIMITES DE DOSE TÉRMICA (kJ/m²)
+# =============================================================================
+# Baseado em: TNO Yellow Book, Eisenberg Correlation, CCPS Guidelines
+# A dose térmica é calculada como: D = q^(4/3) × t
+# Onde: q = fluxo de calor (kW/m²), t = tempo de exposição (s)
 LIMITES_DOSE = {
     "Dor Intensa": {
         "dose": 100,
         "cor": "#FFD700",
-        "desc": "Exposição causa dor intensa, mas sem queimaduras permanentes."
+        "desc": "Exposição causa dor intensa, mas sem queimaduras permanentes. Recuperação completa esperada."
     },
     "Queimadura 1º Grau": {
         "dose": 200,
         "cor": "#FF8C00",
-        "desc": "Vermelhidão e dor. Cicatriza em alguns dias."
+        "desc": "Vermelhidão e dor. Cicatriza em alguns dias. Tratamento ambulatorial."
     },
     "Queimadura 2º Grau": {
         "dose": 600,
         "cor": "#FF4500",
-        "desc": "Bolhas e dano à pele. Requer tratamento médico."
+        "desc": "Bolhas e dano à pele. Requer tratamento médico. Cicatrização pode levar semanas."
     },
     "Letalidade": {
         "dose": 1000,
         "cor": "#8B0000",
-        "desc": "Morte provável por queimaduras extensas e choque."
+        "desc": "Morte provável por queimaduras extensas e choque. Taxa de letalidade > 50%."
     }
 }
 
@@ -174,9 +225,19 @@ PASQUILL_SIGMA = {
 # =============================================================================
 # 2. MOTOR DE CÁLCULO
 # =============================================================================
+# Baseado em: Gaussian Plume Model (Pasquill-Gifford), TNO Yellow Book
+# O modelo assume dispersão gaussiana da nuvem de vapor/gás
 def calcular_sigma_pasquill(distancia_m, classe_estabilidade):
     """
     Calcula os coeficientes de dispersão σy e σz usando correlações Pasquill-Gifford.
+    
+    Parâmetros:
+    - distancia_m: Distância a favor do vento em metros
+    - classe_estabilidade: Classe de estabilidade atmosférica (A-F)
+    
+    Retorna:
+    - sigma_y: Desvio padrão lateral (m)
+    - sigma_z: Desvio padrão vertical (m)
     """
     params = PASQUILL_SIGMA.get(classe_estabilidade, PASQUILL_SIGMA["D"])
     
@@ -192,7 +253,26 @@ def calcular_concentracao_gaussiana(q_kg_s, u_m_s, sigma_y, sigma_z, altura_m, x
     """
     Modelo de Pluma Gaussiana para dispersão atmosférica.
     
+    Calcula a concentração de gás/vapor em um ponto (x, y, z) considerando:
+    - Fonte pontual contínua na altura H
+    - Dispersão gaussiana (normal) em três dimensões
+    - Reflexão no solo (termo de imagem)
+    
+    Fórmula:
     C(x,y,z) = (Q / (2π σy σz U)) * exp(-y²/(2σy²)) * [exp(-(z-H)²/(2σz²)) + exp(-(z+H)²/(2σz²))]
+    
+    Parâmetros:
+    - q_kg_s: Taxa de liberação (kg/s)
+    - u_m_s: Velocidade do vento (m/s)
+    - sigma_y: Desvio padrão lateral (m)
+    - sigma_z: Desvio padrão vertical (m)
+    - altura_m: Altura da fonte (m)
+    - x_m: Distância a favor do vento (m)
+    - y_m: Distância lateral (m)
+    - z_m: Altura do receptor (m)
+    
+    Retorna:
+    - concentracao_percent: Concentração em % em volume
     """
     if u_m_s <= 0 or sigma_y <= 0 or sigma_z <= 0:
         return 0.0
@@ -224,8 +304,21 @@ def calcular_concentracao_gaussiana(q_kg_s, u_m_s, sigma_y, sigma_z, altura_m, x
 
 def calcular_zona_inflamavel(substancia_dados, q_kg_s, u_m_s, altura_m, classe_estabilidade):
     """
-    Calcula a zona onde a concentração está entre LFL e UFL.
-    Retorna lista de pontos (x, y) que delimitam a região inflamável.
+    Calcula a zona onde a concentração está entre LFL e UFL (faixa inflamável).
+    
+    A zona inflamável é a região onde a mistura ar-combustível pode queimar se houver
+    uma fonte de ignição. Fora desta faixa (abaixo do LFL ou acima do UFL), a mistura
+    não queima.
+    
+    Parâmetros:
+    - substancia_dados: Dicionário com propriedades da substância (LFL, UFL)
+    - q_kg_s: Taxa de liberação (kg/s)
+    - u_m_s: Velocidade do vento (m/s)
+    - altura_m: Altura da fonte (m)
+    - classe_estabilidade: Classe de estabilidade atmosférica (A-F)
+    
+    Retorna:
+    - pontos_inflamaveis: Lista de tuplas (x, y) que delimitam a região inflamável
     """
     lfl = substancia_dados["lfl"]
     ufl = substancia_dados["ufl"]
@@ -251,6 +344,23 @@ def calcular_zona_inflamavel(substancia_dados, q_kg_s, u_m_s, altura_m, classe_e
 def calcular_energia_flash_fire(pontos_inflamaveis, substancia_dados, q_kg_s, u_m_s, altura_m, classe_estabilidade):
     """
     Calcula a energia total disponível para combustão na zona inflamável.
+    
+    A energia total é calculada multiplicando a massa de combustível na zona inflamável
+    pelo calor de combustão. Apenas uma fração desta energia é liberada como radiação
+    térmica (fator radiativo χr).
+    
+    Parâmetros:
+    - pontos_inflamaveis: Lista de pontos (x, y) na zona inflamável
+    - substancia_dados: Dicionário com propriedades (LFL, UFL, Hc)
+    - q_kg_s: Taxa de liberação (kg/s)
+    - u_m_s: Velocidade do vento (m/s)
+    - altura_m: Altura da fonte (m)
+    - classe_estabilidade: Classe de estabilidade atmosférica
+    
+    Retorna:
+    - energia_total: Energia total disponível (kJ)
+    - energia_radiativa: Energia liberada como radiação térmica (kJ)
+    - massa_inflamavel: Massa de combustível na zona inflamável (kg)
     """
     if not pontos_inflamaveis:
         return 0.0, 0.0, 0.0
@@ -308,10 +418,24 @@ def calcular_duracao_flash_fire(pontos_inflamaveis, u_m_s):
 
 def calcular_dose_termica(energia_radiativa_kj, area_m2, duracao_s):
     """
-    Calcula a dose térmica recebida.
+    Calcula a dose térmica recebida baseada na correlação de Eisenberg.
     
-    D = q^(4/3) * t
-    Onde q é o fluxo de calor médio (kW/m²)
+    A dose térmica é uma medida do dano causado pela exposição ao calor.
+    Considera tanto a intensidade (fluxo de calor) quanto a duração da exposição.
+    
+    Fórmula: D = q^(4/3) × t
+    Onde:
+    - q = fluxo de calor médio (kW/m²)
+    - t = tempo de exposição (s)
+    
+    Parâmetros:
+    - energia_radiativa_kj: Energia radiativa total (kJ)
+    - area_m2: Área da zona inflamável (m²)
+    - duracao_s: Duração do Flash Fire (s)
+    
+    Retorna:
+    - dose_kj_m2: Dose térmica (kJ/m²)
+    - fluxo_medio_kw_m2: Fluxo de calor médio (kW/m²)
     """
     if area_m2 <= 0 or duracao_s <= 0:
         return 0.0, 0.0  # Retornar tupla mesmo em caso de erro
@@ -326,7 +450,18 @@ def calcular_dose_termica(energia_radiativa_kj, area_m2, duracao_s):
 
 def avaliar_dano_humano(dose_kj_m2):
     """
-    Avalia o dano humano baseado na dose térmica.
+    Avalia o dano humano baseado na dose térmica recebida.
+    
+    Baseado em correlações empíricas (TNO, CCPS) que relacionam dose térmica
+    com efeitos em seres humanos expostos.
+    
+    Parâmetros:
+    - dose_kj_m2: Dose térmica recebida (kJ/m²)
+    
+    Retorna:
+    - nivel_dano: Nome do nível de dano
+    - cor_dano: Cor para visualização
+    - desc_dano: Descrição do dano
     """
     if dose_kj_m2 < LIMITES_DOSE["Dor Intensa"]["dose"]:
         return "Sem Dano", "green", "Exposição abaixo do limiar de dor."
@@ -342,6 +477,18 @@ def avaliar_dano_humano(dose_kj_m2):
 def calcular_tempo_maximo_exposicao(dose_limite_kj_m2, fluxo_kw_m2):
     """
     Calcula o tempo máximo de exposição segura para uma dose limite.
+    
+    Inverte a equação de dose térmica para encontrar o tempo máximo que uma
+    pessoa pode ser exposta a um determinado fluxo de calor sem exceder a dose limite.
+    
+    Fórmula: t = D / q^(4/3)
+    
+    Parâmetros:
+    - dose_limite_kj_m2: Dose térmica limite (kJ/m²)
+    - fluxo_kw_m2: Fluxo de calor (kW/m²)
+    
+    Retorna:
+    - tempo_max: Tempo máximo de exposição segura (s)
     """
     if fluxo_kw_m2 <= 0:
         return float('inf')
@@ -355,67 +502,90 @@ def calcular_tempo_maximo_exposicao(dose_limite_kj_m2, fluxo_kw_m2):
 # 3. INTERFACE VISUAL
 # =============================================================================
 def renderizar():
-    st.markdown("### 🔥 Flash Fire - Incêndio Transitório")
-    st.markdown("Simulação de ignição rápida de nuvem inflamável com efeito térmico sobre pessoas e estruturas.")
+    st.title("Flash Fire - Incêndio Transitório")
+    st.markdown("**Simulação de ignição rápida de nuvem inflamável com efeito térmico sobre pessoas e estruturas**")
     st.markdown("---")
 
     # --- GUIA DIDÁTICO ---
-    with st.expander("📖 O que é um Flash Fire?", expanded=True):
+    with st.expander("Fundamentos Teóricos e Conceitos Operacionais", expanded=True):
         st.markdown("""
-        **O Fenômeno:**
+        #### O que é um Flash Fire?
         
-        Um Flash Fire ocorre quando uma **nuvem de gás/vapor inflamável** encontra uma fonte de ignição e queima 
-        **rapidamente** (0.5 a 2 segundos), liberando calor intenso **sem gerar sobrepressão significativa**.
+        Um Flash Fire (incêndio transitório) ocorre quando uma **nuvem de gás/vapor inflamável** encontra uma fonte de ignição e queima **rapidamente** (0.5 a 2 segundos), liberando calor intenso **sem gerar sobrepressão significativa**.
         
-        **Diferença Chave:**
-        - ❌ **NÃO é uma explosão** (não há onda de choque)
-        - ✅ **É um incêndio transitório** (queima rápida, efeito térmico)
+        #### Diferença Chave: Flash Fire vs Explosão
         
-        **Como Funciona:**
-        1. **Vazamento:** Gás/vapor escapa e forma uma nuvem
-        2. **Dispersão:** O vento espalha a nuvem pelo ambiente
-        3. **Zona Inflamável:** Apenas onde a concentração está entre **LFL** e **UFL** pode queimar
-        4. **Ignição:** Uma faísca acende a nuvem
-        5. **Flash:** A chama se propaga pela nuvem em frações de segundo
-        6. **Dano:** O calor liberado causa queimaduras em pessoas expostas
+        É fundamental distinguir Flash Fire de explosão:
+        - **Flash Fire:** Queima rápida sem onda de choque. Efeito principal é térmico (queimaduras).
+        - **Explosão (VCE/UVCE):** Queima muito rápida com geração de sobrepressão. Efeitos incluem onda de choque e projéteis.
         
-        **O que Mata:**
-        Não é o pico de calor, mas a **Dose Térmica** (calor × tempo). 
-        Mesmo uma chama muito quente, se durar menos de 0.1 segundo, pode não causar dano permanente.
-        """)
-
-    with st.expander("🔬 Conceitos Técnicos", expanded=False):
-        st.markdown("""
-        **LFL (Lower Flammability Limit):** Concentração mínima (% vol) para que a mistura ar-combustível queime.
+        #### Mecanismo do Flash Fire
         
-        **UFL (Upper Flammability Limit):** Concentração máxima (% vol) para que a mistura ainda queime.
+        1. **Vazamento:** Gás/vapor escapa e forma uma nuvem na atmosfera
+        2. **Dispersão:** O vento espalha a nuvem pelo ambiente, criando uma região com concentrações variáveis
+        3. **Zona Inflamável:** Apenas onde a concentração está entre **LFL** (Lower Flammability Limit) e **UFL** (Upper Flammability Limit) a mistura pode queimar
+        4. **Ignição:** Uma fonte de ignição (faísca, chama, superfície quente) acende a nuvem
+        5. **Propagação:** A chama se propaga pela nuvem em frações de segundo (velocidade típica: 5-15 m/s)
+        6. **Liberação de Calor:** O calor liberado causa queimaduras em pessoas expostas
         
-        **Dose Térmica:** Medida do dano causado pelo calor. Fórmula: D = q^(4/3) × t
-        - q = fluxo de calor (kW/m²)
-        - t = tempo de exposição (s)
+        #### O que Determina o Dano?
         
-        **Limites de Dano Humano:**
-        - **100 kJ/m²:** Dor intensa
-        - **200 kJ/m²:** Queimadura 1º grau
-        - **600 kJ/m²:** Queimadura 2º grau
-        - **>1000 kJ/m²:** Letalidade
+        O dano causado não é apenas função da temperatura máxima, mas sim da **Dose Térmica** (calor × tempo). 
+        
+        Mesmo uma chama muito quente, se durar menos de 0.1 segundo, pode não causar dano permanente. Por outro lado, uma chama menos quente mas com duração maior pode causar queimaduras graves.
+        
+        **Fórmula da Dose Térmica (Eisenberg):**
+        **D = q^(4/3) × t**
+        
+        Onde:
+        - D = Dose térmica (kJ/m²)
+        - q = Fluxo de calor (kW/m²)
+        - t = Tempo de exposição (s)
+        
+        #### Conceitos Técnicos
+        
+        **LFL (Lower Flammability Limit):** 
+        Concentração mínima (% em volume) de combustível no ar necessária para que a mistura ar-combustível queime. Abaixo do LFL, há pouco combustível para sustentar a combustão.
+        
+        **UFL (Upper Flammability Limit):** 
+        Concentração máxima (% em volume) de combustível no ar para que a mistura ainda queime. Acima do UFL, há pouco oxigênio para sustentar a combustão.
+        
+        **Fator Radiativo (χr):**
+        Fração da energia total de combustão que é liberada como radiação térmica. Valores típicos: 0.15 a 0.35 (15% a 35%).
+        
+        **Limites de Dano Humano (Dose Térmica):**
+        - **100 kJ/m²:** Dor intensa - Exposição causa dor intensa, mas sem queimaduras permanentes
+        - **200 kJ/m²:** Queimadura 1º grau - Vermelhidão e dor. Cicatriza em alguns dias
+        - **600 kJ/m²:** Queimadura 2º grau - Bolhas e dano à pele. Requer tratamento médico
+        - **>1000 kJ/m²:** Letalidade - Morte provável por queimaduras extensas e choque
+        
+        #### Limitações do Modelo
+        
+        Este modelo utiliza simplificações para fins didáticos e operacionais:
+        - Assume dispersão gaussiana (não considera gases densos)
+        - Não considera topografia complexa
+        - Assume condições meteorológicas estáveis
+        - Simplifica a geometria da zona inflamável
+        - Não modela efeitos de múltiplas fontes de ignição
+        
+        Para análises detalhadas, utilize software especializado (ALOHA, PHAST, FLACS).
         """)
 
     st.markdown("---")
 
     # --- SEÇÃO 1: SUBSTÂNCIA ---
-    st.subheader("1️⃣ Substância Inflamável")
+    st.subheader("Substância Inflamável")
     
     substancia_nome = st.selectbox(
         "Selecione a substância:",
         list(SUBSTANCIAS_FLASH.keys()),
-        help="Escolha a substância envolvida no vazamento. Use 'OUTRAS' para entrada manual."
+        help="Escolha a substância envolvida no vazamento. Consulte a FISPQ ou utilize 'OUTRAS' para entrada manual."
     )
     
     substancia_dados = SUBSTANCIAS_FLASH[substancia_nome]
     
     if substancia_nome == "OUTRAS (Entrada Manual)":
-        st.markdown("**⚙️ Configuração Manual:**")
+        st.markdown("**Configuração Manual:**")
         col_man1, col_man2 = st.columns(2)
         
         with col_man1:
@@ -438,19 +608,24 @@ def renderizar():
         }
         
         if lfl_manual == 0 or ufl_manual == 0:
-            st.warning("⚠️ LFL e UFL devem ser maiores que zero para substâncias inflamáveis!")
+            st.warning("**ATENÇÃO:** LFL e UFL devem ser maiores que zero para substâncias inflamáveis!")
     else:
-        st.info(f"ℹ️ **{substancia_nome}**\n\n{substancia_dados['desc']}")
+        st.info(f"**{substancia_nome}**\n\n{substancia_dados['desc']}")
         
-        col_prop1, col_prop2, col_prop3 = st.columns(3)
-        col_prop1.metric("LFL", f"{substancia_dados['lfl']:.1f}% vol")
-        col_prop2.metric("UFL", f"{substancia_dados['ufl']:.1f}% vol")
-        col_prop3.metric("Calor de Combustão", f"{substancia_dados['hc']/1000:.1f} MJ/kg")
+        col_prop1, col_prop2, col_prop3, col_prop4 = st.columns(4)
+        col_prop1.metric("LFL", f"{substancia_dados['lfl']:.1f}% vol",
+                        help="Limite Inferior de Inflamabilidade")
+        col_prop2.metric("UFL", f"{substancia_dados['ufl']:.1f}% vol",
+                        help="Limite Superior de Inflamabilidade")
+        col_prop3.metric("Calor de Combustão", f"{substancia_dados['hc']/1000:.1f} MJ/kg",
+                        help="Energia liberada na combustão completa")
+        col_prop4.metric("Densidade Relativa", f"{substancia_dados['densidade_rel']:.2f}x",
+                        help="Densidade em relação ao ar")
 
     st.markdown("---")
 
     # --- SEÇÃO 2: CENÁRIO DE VAZAMENTO ---
-    st.subheader("2️⃣ Cenário de Vazamento")
+    st.subheader("Cenário de Vazamento")
     
     col_cen1, col_cen2 = st.columns(2)
     
@@ -493,56 +668,67 @@ def renderizar():
         )
     
     with col_cen2:
-        st.markdown("**🌬️ Condições Atmosféricas:**")
+        st.markdown("**Condições Atmosféricas:**")
         
         velocidade_vento = st.number_input(
             "Velocidade do Vento (m/s)",
             min_value=0.1,
             value=5.0,
             step=0.5,
-            help="Velocidade do vento na direção predominante"
+            help="Velocidade do vento na direção predominante. Valores típicos: 1-3 m/s (leve), 3-7 m/s (moderado), >7 m/s (forte)."
         )
         
         classe_estabilidade = st.selectbox(
-            "Classe de Estabilidade (Pasquill):",
+            "Classe de Estabilidade (Pasquill-Gifford):",
             ["A", "B", "C", "D", "E", "F"],
             index=3,
-            help="A = Muito instável | D = Neutra | F = Muito estável"
+            help="A = Muito instável (dia com sol forte) | D = Neutra (condições padrão) | F = Muito estável (noite clara, vento calmo)"
         )
         
-        st.caption(f"ℹ️ Classe {classe_estabilidade}: {'Muito instável' if classe_estabilidade == 'A' else 'Muito estável' if classe_estabilidade == 'F' else 'Neutra' if classe_estabilidade == 'D' else 'Instável' if classe_estabilidade in ['B','C'] else 'Estável'}")
+        desc_estabilidade = {
+            "A": "Muito instável",
+            "B": "Moderadamente instável",
+            "C": "Ligeiramente instável",
+            "D": "Neutra",
+            "E": "Ligeiramente estável",
+            "F": "Moderadamente estável"
+        }
+        st.caption(f"**Classe {classe_estabilidade}:** {desc_estabilidade.get(classe_estabilidade, 'Desconhecida')}")
         
         temperatura = st.number_input(
             "Temperatura Ambiente (°C)",
             min_value=-50.0,
             max_value=50.0,
             value=25.0,
-            step=1.0
+            step=1.0,
+            help="Temperatura do ar ambiente. Afeta a densidade do ar e a dispersão."
         )
 
     st.markdown("---")
 
     # --- SEÇÃO 3: GEORREFERENCIAMENTO ---
-    st.subheader("3️⃣ Localização do Incidente")
+    st.subheader("Localização do Incidente")
     
     col_geo1, col_geo2 = st.columns(2)
     
     with col_geo1:
-        lat = st.number_input("Latitude", value=-22.8625, format="%.6f")
+        lat = st.number_input("Latitude (graus decimais)", value=-22.8625, format="%.6f",
+                             help="Coordenada geográfica do local do vazamento. Use o Google Maps para obter coordenadas precisas.")
     
     with col_geo2:
-        lon = st.number_input("Longitude", value=-43.2245, format="%.6f")
+        lon = st.number_input("Longitude (graus decimais)", value=-43.2245, format="%.6f",
+                             help="Coordenada geográfica do local do vazamento.")
 
     st.markdown("---")
 
     # --- BOTÃO DE CÁLCULO ---
-    if st.button("🔥 Calcular Flash Fire", type="primary", use_container_width=True):
+    if st.button("CALCULAR FLASH FIRE", type="primary", use_container_width=True):
         st.session_state['flash_fire_calc'] = True
 
     if st.session_state.get('flash_fire_calc', False):
         # Verificar se a substância é inflamável
         if substancia_dados["lfl"] == 0 or substancia_dados["ufl"] == 0:
-            st.error("🚨 **SUBSTÂNCIA NÃO INFLAMÁVEL:** Esta substância não pode gerar Flash Fire. Verifique os valores de LFL e UFL.")
+            st.error("**SUBSTÂNCIA NÃO INFLAMÁVEL:** Esta substância não pode gerar Flash Fire. Verifique os valores de LFL e UFL.")
         else:
             # Calcular zona inflamável
             with st.spinner("Calculando zona inflamável..."):
@@ -551,7 +737,7 @@ def renderizar():
                 )
             
             if not pontos_inflamaveis:
-                st.warning("⚠️ **ZONA INFLAMÁVEL NÃO DETECTADA:** As condições não geram concentrações entre LFL e UFL. "
+                st.warning("**ZONA INFLAMÁVEL NÃO DETECTADA:** As condições não geram concentrações entre LFL e UFL. "
                           "O vazamento pode ser muito pequeno ou as condições atmosféricas muito dispersivas.")
             else:
                 # Calcular energia
@@ -582,23 +768,29 @@ def renderizar():
                 nivel_dano, cor_dano, desc_dano = avaliar_dano_humano(dose_termica)
                 
                 st.markdown("---")
-                st.markdown("### 📊 Resultados da Simulação")
+                st.markdown("### Resultados da Simulação")
                 
                 # Métricas principais
                 col_res1, col_res2, col_res3, col_res4 = st.columns(4)
                 
-                col_res1.metric("Duração do Flash", f"{duracao:.2f} s", "Tempo de queima")
-                col_res2.metric("Energia Radiativa", f"{energia_radiativa/1000:.1f} MJ", "Calor liberado")
-                col_res3.metric("Fluxo de Calor Médio", f"{fluxo_medio:.1f} kW/m²", "Intensidade térmica")
-                col_res4.metric("Dose Térmica", f"{dose_termica:.0f} kJ/m²", "Dano potencial")
+                col_res1.metric("Duração do Flash", f"{duracao:.2f} s", "Tempo de queima",
+                               help="Duração estimada do Flash Fire")
+                col_res2.metric("Energia Radiativa", f"{energia_radiativa/1000:.1f} MJ", "Calor liberado",
+                               help="Energia liberada como radiação térmica")
+                col_res3.metric("Fluxo de Calor Médio", f"{fluxo_medio:.1f} kW/m²", "Intensidade térmica",
+                               help="Fluxo de calor médio na zona")
+                col_res4.metric("Dose Térmica", f"{dose_termica:.0f} kJ/m²", "Dano potencial",
+                               help="Dose térmica calculada (Eisenberg)")
                 
                 # Diagnóstico de dano
-                st.markdown("#### 🚨 Avaliação de Dano Humano")
+                st.markdown("---")
+                st.markdown("### Avaliação de Dano Humano")
                 st.markdown(f"**Nível de Dano:** <span style='color:{cor_dano}; font-size:20px; font-weight:bold'>{nivel_dano}</span>", unsafe_allow_html=True)
-                st.info(f"📋 {desc_dano}")
+                st.info(f"**Descrição:** {desc_dano}")
                 
                 # Tempos de exposição crítica
-                st.markdown("#### ⏱️ Tempos de Exposição Crítica")
+                st.markdown("---")
+                st.markdown("### Tempos de Exposição Crítica")
                 
                 tempo_dor = calcular_tempo_maximo_exposicao(LIMITES_DOSE["Dor Intensa"]["dose"], fluxo_medio)
                 tempo_1grau = calcular_tempo_maximo_exposicao(LIMITES_DOSE["Queimadura 1º Grau"]["dose"], fluxo_medio)
@@ -610,15 +802,35 @@ def renderizar():
                 col_tempo3.metric("Tempo para 2º Grau", f"{tempo_2grau:.2f} s", "Queimadura grave")
                 
                 if tempo_dor < duracao:
-                    st.warning(f"⚠️ **ATENÇÃO:** A duração do Flash Fire ({duracao:.2f}s) excede o tempo seguro de exposição ({tempo_dor:.2f}s). "
+                    st.warning(f"**ATENÇÃO:** A duração do Flash Fire ({duracao:.2f}s) excede o tempo seguro de exposição ({tempo_dor:.2f}s). "
                               f"Pessoas na zona inflamável sofrerão danos!")
                 else:
-                    st.success(f"✅ A duração do Flash Fire ({duracao:.2f}s) é menor que o tempo seguro ({tempo_dor:.2f}s). "
+                    st.success(f"A duração do Flash Fire ({duracao:.2f}s) é menor que o tempo seguro ({tempo_dor:.2f}s). "
                               f"Exposição direta pode não causar dano permanente.")
+                
+                # Informações técnicas
+                st.markdown("---")
+                st.markdown("### Informações Técnicas")
+                
+                col_info1, col_info2 = st.columns(2)
+                with col_info1:
+                    st.markdown(f"""
+                    **Substância:** {substancia_nome}  
+                    **Taxa de Vazamento:** {q_kg_s:.2f} kg/s  
+                    **Massa Inflamável:** {massa_inflamavel:.2f} kg  
+                    **Energia Total:** {energia_total/1000:.1f} MJ
+                    """)
+                with col_info2:
+                    st.markdown(f"""
+                    **Velocidade do Vento:** {velocidade_vento:.1f} m/s  
+                    **Classe de Estabilidade:** {classe_estabilidade}  
+                    **Temperatura:** {temperatura:.1f} °C  
+                    **Área da Zona:** {area_aproximada:.0f} m²
+                    """)
                 
                 # Mapa
                 st.markdown("---")
-                st.markdown("#### 🗺️ Visualização da Zona Flash Fire")
+                st.markdown("### Visualização da Zona Flash Fire")
                 
                 m = folium.Map(location=[lat, lon], zoom_start=16, tiles="OpenStreetMap")
                 
@@ -684,17 +896,52 @@ def renderizar():
                 
                 st_folium(m, width=None, height=600)
                 
-                st.caption("💡 As zonas são representações simplificadas. A zona real depende da direção do vento e das condições atmosféricas.")
+                st.caption("As zonas são representações simplificadas. A zona real depende da direção do vento e das condições atmosféricas.")
                 
                 # Recomendações
                 st.markdown("---")
-                st.markdown("#### 💡 Recomendações Táticas")
+                st.markdown("### Recomendações Operacionais")
                 
                 if nivel_dano == "Letalidade":
-                    st.error("🚨 **EVACUAÇÃO IMEDIATA:** A zona Flash Fire é letal. Nenhuma pessoa deve permanecer na área.")
+                    st.error("**EVACUAÇÃO IMEDIATA:**")
+                    st.markdown("""
+                    1. Evacuar imediatamente todas as pessoas dentro da zona Flash Fire
+                    2. Estabelecer perímetro de segurança baseado na zona letal
+                    3. Área deve ser considerada zona quente (Hot Zone)
+                    4. Entrada permitida apenas com Equipamento de Proteção Individual (EPI) completo
+                    5. Coordenar com equipes de emergência
+                    """)
                 elif nivel_dano == "Queimadura 2º Grau":
-                    st.warning("⚠️ **ALTO RISCO:** Exposição direta causa queimaduras graves. Evacuação recomendada.")
+                    st.warning("**ALTO RISCO:**")
+                    st.markdown("""
+                    1. Evacuar pessoas da zona de risco
+                    2. Exposição direta causa queimaduras graves
+                    3. Limitar acesso à área
+                    4. Usar proteção adequada se entrada for necessária
+                    """)
                 elif nivel_dano == "Queimadura 1º Grau":
-                    st.warning("⚠️ **RISCO MODERADO:** Exposição causa queimaduras leves. Limite o tempo de permanência.")
+                    st.warning("**RISCO MODERADO:**")
+                    st.markdown("""
+                    1. Exposição causa queimaduras leves
+                    2. Limitar tempo de permanência na zona
+                    3. Monitorar continuamente a situação
+                    4. Estar preparado para evacuação se condições piorarem
+                    """)
                 else:
-                    st.info("✅ **RISCO BAIXO:** Exposição causa apenas desconforto. Monitore a situação.")
+                    st.info("**RISCO BAIXO:**")
+                    st.markdown("""
+                    1. Exposição causa apenas desconforto
+                    2. Monitore a evolução da situação
+                    3. Mantenha distância segura
+                    4. Esteja preparado para evacuação se condições mudarem
+                    """)
+                
+                st.info("""
+                **CONSIDERAÇÕES TÉCNICAS:**
+                - Este modelo é uma aproximação simplificada. Condições reais podem variar significativamente.
+                - A zona inflamável real pode ter formato complexo dependendo da direção do vento e topografia.
+                - Múltiplas fontes de ignição podem alterar o comportamento do Flash Fire.
+                - Gases densos podem ter comportamento diferente (considere usar módulo de Gases Densos).
+                - Consulte software especializado (ALOHA, PHAST, FLACS) para análises detalhadas.
+                - Utilize detectores de gás para monitoramento em tempo real das concentrações.
+                """)

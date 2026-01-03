@@ -3,84 +3,259 @@ import folium
 from streamlit_folium import st_folium
 import math
 import numpy as np
+import pandas as pd
 
 # =============================================================================
-# 1. BANCO DE DADOS: GASES E VAPORES INFLAMÁVEIS
+# BANCO DE DADOS: SUBSTÂNCIAS VOLÁTEIS PARA VCE
 # =============================================================================
-# Propriedades:
-# Hc: Calor de Combustão (kJ/kg)
-# Reatividade: Classificação de quão fácil o gás detona (Baixa, Média, Alta)
+# VCE (Vapor Cloud Explosion) ocorre quando uma nuvem de vapor inflamável
+# encontra uma fonte de ignição e explode, gerando sobrepressão.
+# Propriedades necessárias: LFL, UFL, Hc (calor de combustão), densidade
 SUBSTANCIAS_VCE = {
     "Gás Natural (Metano)": {
-        "Hc": 50000, 
-        "reatividade": "Baixa",
-        "desc": "Sobe rápido. Difícil explodir ao ar livre, requer confinamento forte."
-    },
-    "Propano (GLP)": {
-        "Hc": 46350, 
+        "tipo": "Gás Combustível",
+        "LFL": 5.0,  # % volume
+        "UFL": 15.0,  # % volume
+        "Hc": 50.0,  # MJ/kg
+        "densidade_ar": 0.55,  # mais leve que ar
         "reatividade": "Média",
-        "desc": "Mais pesado que o ar. Acumula em baixadas e esgotos. Explosão clássica."
+        "desc": "Principal componente do gás encanado. Mais leve que o ar, dissipa rapidamente em ambientes abertos."
     },
-    "Butano": {
-        "Hc": 45750, 
+    "GLP (Propano/Butano)": {
+        "tipo": "Gás Liquefeito",
+        "LFL": 2.1,
+        "UFL": 9.5,
+        "Hc": 46.0,
+        "densidade_ar": 1.55,  # mais pesado que ar
         "reatividade": "Média",
-        "desc": "Gás de cozinha. Comportamento similar ao Propano."
+        "desc": "Gás de cozinha (P-13, P-45). Mais pesado que o ar, acumula em baixadas e porões."
     },
-    "Gasolina (Vapores)": {
-        "Hc": 44400, 
-        "reatividade": "Média",
-        "desc": "Evaporação de grandes derramamentos. Nuvem rasteira."
-    },
-    "Etileno": {
-        "Hc": 47100, 
+    "Hidrogênio (H2)": {
+        "tipo": "Gás Combustível",
+        "LFL": 4.0,
+        "UFL": 75.0,
+        "Hc": 120.0,
+        "densidade_ar": 0.07,  # muito mais leve
         "reatividade": "Alta",
-        "desc": "Muito reativo. Acelera a chama rapidamente, gerando fortes explosões."
-    },
-    "Hidrogênio": {
-        "Hc": 120000, 
-        "reatividade": "Alta",
-        "desc": "Detonação muito fácil. Onda de choque rápida e 'seca'."
+        "desc": "Alto poder calorífico. Amplo intervalo de inflamabilidade. Chama quase invisível."
     },
     "Acetileno": {
-        "Hc": 48200, 
+        "tipo": "Gás Instável",
+        "LFL": 2.5,
+        "UFL": 100.0,
+        "Hc": 48.0,
+        "densidade_ar": 0.90,
         "reatividade": "Alta",
-        "desc": "Instável. Pode detonar com pouquíssima energia."
+        "desc": "Usado em solda. Pode detonar sem oxigênio externo. Extremamente instável sob pressão."
     },
-    "Óxido de Etileno": {
-        "Hc": 29000, 
+    "Etileno": {
+        "tipo": "Gás Combustível",
+        "LFL": 2.7,
+        "UFL": 36.0,
+        "Hc": 47.0,
+        "densidade_ar": 0.97,
         "reatividade": "Alta",
-        "desc": "Pode explodir mesmo sem oxigênio (decomposição). Extremamente violento."
+        "desc": "Usado em indústria petroquímica. Amplo intervalo de inflamabilidade."
+    },
+    "Acetona": {
+        "tipo": "Vapor Orgânico",
+        "LFL": 2.5,
+        "UFL": 12.8,
+        "Hc": 29.0,
+        "densidade_ar": 2.0,
+        "reatividade": "Média",
+        "desc": "Solvente comum. Vapor mais pesado que o ar, acumula próximo ao solo."
+    },
+    "Gasolina (Vapor)": {
+        "tipo": "Vapor de Combustível",
+        "LFL": 1.4,
+        "UFL": 7.6,
+        "Hc": 44.0,
+        "densidade_ar": 3.0,
+        "reatividade": "Alta",
+        "desc": "Vapor de gasolina de tanques ou derramamentos. Muito volátil e inflamável."
+    },
+    "Etanol (Vapor)": {
+        "tipo": "Vapor Orgânico",
+        "LFL": 3.3,
+        "UFL": 19.0,
+        "Hc": 26.8,
+        "densidade_ar": 1.59,
+        "reatividade": "Média",
+        "desc": "Vapor de álcool etílico. Usado como combustível e solvente."
+    },
+    "Benzeno": {
+        "tipo": "Vapor Aromático",
+        "LFL": 1.2,
+        "UFL": 7.8,
+        "Hc": 40.0,
+        "densidade_ar": 2.7,
+        "reatividade": "Média",
+        "desc": "Hidrocarboneto aromático. Carcinogênico. Vapor pesado, acumula em baixadas."
+    },
+    "Tolueno": {
+        "tipo": "Vapor Aromático",
+        "LFL": 1.2,
+        "UFL": 7.0,
+        "Hc": 40.5,
+        "densidade_ar": 3.1,
+        "reatividade": "Média",
+        "desc": "Solvente aromático comum. Vapor mais pesado que o ar."
+    },
+    "Xileno": {
+        "tipo": "Vapor Aromático",
+        "LFL": 1.0,
+        "UFL": 7.0,
+        "Hc": 40.8,
+        "densidade_ar": 3.7,
+        "reatividade": "Média",
+        "desc": "Isômeros de xileno. Solventes industriais. Vapor muito pesado."
+    },
+    "Metanol": {
+        "tipo": "Vapor Orgânico",
+        "LFL": 6.0,
+        "UFL": 36.5,
+        "Hc": 19.9,
+        "densidade_ar": 1.11,
+        "reatividade": "Média",
+        "desc": "Álcool metílico. Combustível alternativo. Tóxico por ingestão."
+    },
+    "Éter Dietílico": {
+        "tipo": "Vapor Orgânico",
+        "LFL": 1.9,
+        "UFL": 36.0,
+        "Hc": 33.9,
+        "densidade_ar": 2.55,
+        "reatividade": "Alta",
+        "desc": "Solvente altamente volátil. Amplo intervalo de inflamabilidade. Forma peróxidos perigosos."
+    },
+    "Acetaldeído": {
+        "tipo": "Vapor Orgânico",
+        "LFL": 4.0,
+        "UFL": 57.0,
+        "Hc": 24.0,
+        "densidade_ar": 1.52,
+        "reatividade": "Alta",
+        "desc": "Aldeído volátil. Amplo intervalo de inflamabilidade. Usado em síntese química."
+    },
+    "Hexano": {
+        "tipo": "Vapor de Hidrocarboneto",
+        "LFL": 1.2,
+        "UFL": 7.5,
+        "Hc": 44.7,
+        "densidade_ar": 2.97,
+        "reatividade": "Média",
+        "desc": "Hidrocarboneto alifático. Solvente comum. Vapor pesado."
+    },
+    "Heptano": {
+        "tipo": "Vapor de Hidrocarboneto",
+        "LFL": 1.1,
+        "UFL": 6.7,
+        "Hc": 44.6,
+        "densidade_ar": 3.46,
+        "reatividade": "Média",
+        "desc": "Componente de gasolina. Vapor muito pesado, acumula próximo ao solo."
+    },
+    "Octano": {
+        "tipo": "Vapor de Hidrocarboneto",
+        "LFL": 1.0,
+        "UFL": 6.0,
+        "Hc": 44.4,
+        "densidade_ar": 3.94,
+        "reatividade": "Média",
+        "desc": "Componente de gasolina. Vapor extremamente pesado."
+    },
+    "Metil Etil Cetona (MEK)": {
+        "tipo": "Vapor de Cetona",
+        "LFL": 1.8,
+        "UFL": 10.0,
+        "Hc": 31.0,
+        "densidade_ar": 2.48,
+        "reatividade": "Média",
+        "desc": "Solvente cetônico industrial. Vapor pesado."
+    },
+    "Cloreto de Metileno": {
+        "tipo": "Vapor Clorado",
+        "LFL": 12.0,
+        "UFL": 19.0,
+        "Hc": 8.5,
+        "densidade_ar": 2.93,
+        "reatividade": "Baixa",
+        "desc": "Solvente clorado. Menor poder calorífico, mas ainda inflamável."
+    },
+    "Amoníaco (NH3)": {
+        "tipo": "Gás Tóxico/Combustível",
+        "LFL": 15.0,
+        "UFL": 28.0,
+        "Hc": 18.6,
+        "densidade_ar": 0.59,
+        "reatividade": "Média",
+        "desc": "Gás tóxico e corrosivo. Pode queimar em altas concentrações. Mais leve que o ar."
+    },
+    "Monóxido de Carbono (CO)": {
+        "tipo": "Gás Tóxico/Combustível",
+        "LFL": 12.5,
+        "UFL": 74.0,
+        "Hc": 10.1,
+        "densidade_ar": 0.97,
+        "reatividade": "Média",
+        "desc": "Gás tóxico incolor e inodoro. Pode queimar formando CO2. Principalmente risco tóxico."
+    },
+    "Sulfeto de Hidrogênio (H2S)": {
+        "tipo": "Gás Tóxico/Combustível",
+        "LFL": 4.0,
+        "UFL": 44.0,
+        "Hc": 16.5,
+        "densidade_ar": 1.19,
+        "reatividade": "Média",
+        "desc": "Gás tóxico com odor característico. Pode queimar. Mais pesado que o ar."
     }
 }
 
 # Limites de Sobrepressão (Overpressure) - PSI e BAR
-# Fonte: EPA / CCPS "Yellow Book"
+# Fonte: CCPS Guidelines, TNO Yellow Book, EPA
 LIMITES_BLAST = {
     "Destruição Total / Ruptura Pulmão (10 psi)": {
-        "psi": 10.0, "bar": 0.69, "cor": "#000000", # Preto
-        "desc": "Demolição de prédios de concreto. Morte provável."
+        "psi": 10.0,
+        "bar": 0.69,
+        "cor": "#000000",
+        "desc": "Demolição de prédios de concreto. Morte provável por trauma e hemorragia pulmonar."
     },
     "Danos Graves / Ruptura Tímpano (5 psi)": {
-        "psi": 5.0, "bar": 0.34, "cor": "#FF0000", # Vermelho
-        "desc": "Paredes de alvenaria caem. Tímpanos estouram. Árvores arrancadas."
+        "psi": 5.0,
+        "bar": 0.34,
+        "cor": "#e74c3c",
+        "desc": "Paredes de alvenaria caem. Tímpanos estouram. Árvores arrancadas. Lesões graves."
     },
     "Danos Médios / Derruba Pessoas (2 psi)": {
-        "psi": 2.0, "bar": 0.14, "cor": "#FF8C00", # Laranja
-        "desc": "Estruturas metálicas entortam. Pessoas são arremessadas. Destelhamento."
+        "psi": 2.0,
+        "bar": 0.14,
+        "cor": "#f39c12",
+        "desc": "Estruturas metálicas entortam. Pessoas são arremessadas. Destelhamento generalizado."
     },
     "Quebra de Vidros / Janelas (0.5 psi)": {
-        "psi": 0.5, "bar": 0.03, "cor": "#FFD700", # Amarelo
-        "desc": "Janelas quebram a quilômetros. Ferimentos por estilhaços."
+        "psi": 0.5,
+        "bar": 0.03,
+        "cor": "#f1c40f",
+        "desc": "Janelas quebram e voam como estilhaços. 80% dos feridos em explosões urbanas estão nesta zona."
     }
 }
 
 # =============================================================================
-# 2. MOTOR DE CÁLCULO (TNT EQUIVALENCE MODIFICADO)
+# MOTOR DE CÁLCULO: VCE (TNO YELLOW BOOK / CCPS)
 # =============================================================================
 def calcular_vce(massa_kg, gas_props, grau_confinamento):
     """
     Calcula os raios de sobrepressão baseado na massa da nuvem e no confinamento.
     Método: Equivalência TNT Ajustada por Eficiência (Yield Factor).
+    
+    Parâmetros:
+        massa_kg: Massa total da nuvem de vapor (kg)
+        gas_props: Dicionário com propriedades do gás (Hc, reatividade)
+        grau_confinamento: String indicando o nível de confinamento
+    
+    Retorna:
+        Dicionário com raios de dano para cada nível de sobrepressão
     """
     # 1. Definir Fator de Eficiência (Yield) baseado no cenário
     # Quanto mais obstáculos (tubos, paredes), maior a turbulência e a explosão.
@@ -129,120 +304,208 @@ def calcular_vce(massa_kg, gas_props, grau_confinamento):
     raios = {}
     for nome, dados in LIMITES_BLAST.items():
         psi = dados['psi']
-        z_factor = mapa_z.get(psi, 22.0)
-        
-        r = z_factor * (kg_tnt ** (1/3))
-        raios[nome] = r
-        
+        z = mapa_z[psi]
+        raiz_cubica_w = math.pow(kg_tnt, 1/3) if kg_tnt > 0 else 0
+        raio_m = z * raiz_cubica_w
+        raios[nome] = raio_m
+    
     return raios, kg_tnt, eficiencia
 
 # =============================================================================
-# 3. INTERFACE VISUAL
+# INTERFACE DO USUÁRIO
 # =============================================================================
 def renderizar():
-    st.markdown("### ☁️ VCE (Explosão de Nuvem de Vapor)")
-    st.markdown("Modelagem de onda de choque gerada por ignição retardada de gás.")
+    st.title("Ondas de Choque e VCE")
+    st.markdown("**Modelagem de Explosão de Nuvem de Vapor: Análise de Sobrepressão e Zonas de Dano**")
     st.markdown("---")
 
     # --- GUIA DIDÁTICO ---
-    with st.expander("📖 O Segredo do VCE: Por que demorou a explodir?", expanded=True):
+    with st.expander("Fundamentos da Modelagem de VCE (Vapor Cloud Explosion)", expanded=True):
         st.markdown("""
-        **A Diferença Vital:**
-        * **Jet Fire / Pool Fire:** O gás vaza e acende *na hora*. O risco é **CALOR**.
-        * **VCE (Vapor Cloud Explosion):** O gás vaza, *não acende*, forma uma nuvem gigante que entra no meio dos prédios. Quando encontra uma faísca, a chama corre tão rápido que empurra o ar, criando uma **ONDA DE CHOQUE (Blast)**.
+        **O que é uma VCE?**
         
-        **O Fator Confinamento:**
-        Para haver explosão forte, a nuvem precisa de "obstáculos" (tubos, paredes, árvores) para gerar turbulência.
-        * 🏕️ **Campo Aberto:** A nuvem queima devagar (Flash Fire). Pouca pressão.
-        * 🏭 **Refinaria/Cidade:** A nuvem explode violentamente. Muita pressão.
+        Uma Explosão de Nuvem de Vapor (VCE) ocorre quando uma nuvem de gás ou vapor inflamável encontra uma 
+        fonte de ignição e explode, gerando uma onda de choque de sobrepressão atmosférica. Diferente de um 
+        incêndio comum, a VCE produz efeitos destrutivos mesmo a distâncias significativas.
+        
+        **Princípios Físicos:**
+        
+        1. **Formação da Nuvem:** Um vazamento de gás ou líquido volátil forma uma nuvem de vapor que se mistura 
+           com o ar. A nuvem deve estar dentro dos limites de inflamabilidade (LFL-UFL) para explodir.
+        
+        2. **Ignição:** Quando a nuvem encontra uma fonte de ignição (faísca, chama, superfície quente), 
+           a combustão se propaga através da nuvem.
+        
+        3. **Confinamento e Turbulência:** A presença de obstáculos (edifícios, equipamentos, tubulações) 
+           aumenta a turbulência e o confinamento, fazendo com que mais energia seja convertida em sobrepressão 
+           ao invés de apenas radiação térmica.
+        
+        4. **Onda de Choque:** A sobrepressão gerada cria uma onda de choque que se propaga radialmente, 
+           causando danos estruturais e lesões humanas.
+        
+        **Metodologia de Cálculo:**
+        
+        Este módulo utiliza o método de Equivalência TNT ajustado por eficiência de explosão:
+        - A energia química disponível (massa × calor de combustão) é convertida em equivalente TNT
+        - A eficiência de explosão depende do grau de confinamento e turbulência
+        - A lei de escala de Hopkinson-Cranz relaciona a massa de TNT equivalente com os raios de dano
+        - Diferentes níveis de sobrepressão correspondem a diferentes severidades de dano
+        
+        **Limitações do Modelo:**
+        
+        Este modelo assume detonação pontual e distribuição uniforme de energia. Em cenários reais, fatores como 
+        geometria da nuvem, direção do vento, topografia e presença de múltiplas fontes de ignição podem alterar 
+        significativamente os resultados.
         """)
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("📍 Cenário")
-        lat = st.number_input("Latitude", value=-22.8625, format="%.5f")
-        lon = st.number_input("Longitude", value=-43.2245, format="%.5f")
+        st.subheader("Parâmetros do Cenário")
         
-        subs_nome = st.selectbox("Gás da Nuvem", list(SUBSTANCIAS_VCE.keys()))
-        dados_gas = SUBSTANCIAS_VCE[subs_nome]
-        st.caption(f"ℹ️ {dados_gas['desc']} (Reatividade: {dados_gas['reatividade']})")
+        # Seleção de substância
+        substancia = st.selectbox("Substância", list(SUBSTANCIAS_VCE.keys()))
+        dados_substancia = SUBSTANCIAS_VCE[substancia]
+        
+        st.info(f"**{substancia}**\n\n**Tipo:** {dados_substancia['tipo']}\n\n**Descrição:** {dados_substancia['desc']}\n\n"
+               f"**LFL:** {dados_substancia['LFL']}% vol | **UFL:** {dados_substancia['UFL']}% vol\n"
+               f"**Calor de Combustão:** {dados_substancia['Hc']} MJ/kg\n"
+               f"**Densidade relativa ao ar:** {dados_substancia['densidade_ar']:.2f}\n"
+               f"**Reatividade:** {dados_substancia['reatividade']}")
+        
+        # Massa da nuvem
+        massa = st.number_input("Massa da Nuvem de Vapor (kg)", value=1000.0, min_value=1.0, step=100.0, format="%.1f")
+        
+        # Grau de confinamento
+        confinamento = st.selectbox(
+            "Grau de Confinamento / Obstáculos",
+            ["Campo Aberto (Sem Obstáculos)",
+             "Urbano / Floresta (Obstáculos Médios)",
+             "Refinaria / Processo (Muitos Tubos)",
+             "Confinado (Túnel / Bunker)"],
+            index=1
+        )
+        
+        st.caption("**Nota:** O confinamento afeta a eficiência da explosão. Ambientes com mais obstáculos "
+                  "geram maior sobrepressão devido ao aumento da turbulência.")
 
     with col2:
-        st.subheader("⚙️ Tamanho e Ambiente")
-        massa = st.number_input("Massa na Nuvem (kg)", value=2000.0, step=500.0, help="Quanto gás vazou ANTES de acender?")
+        st.subheader("Georreferenciamento")
         
-        confinamento = st.selectbox(
-            "Grau de Confinamento / Obstáculos", 
-            [
-                "Campo Aberto (Sem Obstáculos)",
-                "Urbano / Floresta (Obstáculos Médios)",
-                "Refinaria / Processo (Muitos Tubos)",
-                "Confinado (Túnel / Bunker)"
-            ],
-            index=1,
-            help="Determina se será apenas um 'fogo' ou uma 'bomba'."
-        )
+        lat = st.number_input("Latitude", value=-22.9068, format="%.6f")
+        lon = st.number_input("Longitude", value=-43.1729, format="%.6f")
+        
+        st.caption("Coordenadas do ponto de origem da explosão (centro da nuvem de vapor).")
 
-    # Botão
-    if 'vce_calc' not in st.session_state: st.session_state['vce_calc'] = False
+    # Botão de cálculo
+    if 'vce_calc' not in st.session_state:
+        st.session_state['vce_calc'] = False
     
-    if st.button("💣 Detonar Nuvem", type="primary", use_container_width=True):
+    if st.button("Calcular Zonas de Dano", type="primary", use_container_width=True):
         st.session_state['vce_calc'] = True
 
     if st.session_state['vce_calc']:
-        # Calcular
-        raios, tnt_eq, efic = calcular_vce(massa, dados_gas, confinamento)
+        # Calcular VCE
+        raios, kg_tnt, eficiencia = calcular_vce(massa, dados_substancia, confinamento)
         
-        st.markdown("#### 📊 Análise da Onda de Choque")
+        st.markdown("---")
+        st.markdown("### Resultados da Análise")
         
-        # Métricas
-        k1, k2, k3 = st.columns(3)
-        k1.metric("Massa de Gás", f"{massa/1000:.1f} Ton", "Combustível")
-        k2.metric("Eficiência da Explosão", f"{efic*100:.1f}%", f"Confinamento: {confinamento.split(' ')[0]}")
-        k3.metric("Equivalência TNT", f"{tnt_eq/1000:.1f} Ton", "Energia Mecânica", delta_color="inverse")
+        # Métricas principais
+        m1, m2, m3 = st.columns(3)
+        m1.metric("Equivalente TNT", f"{kg_tnt:.2f} kg", "Massa equivalente")
+        m2.metric("Eficiência de Explosão", f"{eficiencia*100:.1f}%", "Fator de conversão")
+        m3.metric("Energia Liberada", f"{massa * dados_substancia['Hc'] * eficiencia:.0f} MJ", "Energia total")
         
-        st.write("---")
+        # Zonas de dano
+        st.markdown("#### Zonas de Dano por Sobrepressão")
         
-        # Zonas de Impacto
-        c1, c2, c3 = st.columns(3)
-        c1.metric("Zona Mortal (10 psi)", f"{raios['Destruição Total / Ruptura Pulmão (10 psi)']:.0f} m", "Colapso Total", delta_color="inverse")
-        c2.metric("Tímpanos/Paredes (5 psi)", f"{raios['Danos Graves / Ruptura Tímpano (5 psi)']:.0f} m", "Danos Graves", delta_color="off")
-        c3.metric("Quebra Vidros (0.5 psi)", f"{raios['Quebra de Vidros / Janelas (0.5 psi)']:.0f} m", "Estilhaços")
-
-        if confinamento == "Campo Aberto (Sem Obstáculos)":
-            st.info("💡 **Nota Tática:** Em campo aberto, a onda de choque é fraca. O risco principal seria o fogo (Flash Fire) dentro da nuvem, não a explosão à distância.")
-
-        # Mapa
-        m = folium.Map(location=[lat, lon], zoom_start=15, tiles="OpenStreetMap")
+        # Criar mapa
+        m = folium.Map(location=[lat, lon], zoom_start=15)
         
-        # Marcador
-        folium.Marker(
-            [lat, lon], 
-            tooltip=f"VCE: {subs_nome}",
-            icon=folium.Icon(color="black", icon="cloud-meatball", prefix="fa")
-        ).add_to(m)
+        # Adicionar círculos de dano (do maior para o menor)
+        cores_ordem = ["#f1c40f", "#f39c12", "#e74c3c", "#000000"]
+        nomes_ordem = list(raios.keys())[::-1]  # Inverter para desenhar do maior para o menor
         
-        # Desenhar Zonas (Blast Rings)
-        # Ordem: Amarelo (Maior) -> Laranja -> Vermelho -> Preto (Menor)
-        zonas_ordem = [
-            ("Quebra de Vidros / Janelas (0.5 psi)", LIMITES_BLAST["Quebra de Vidros / Janelas (0.5 psi)"]),
-            ("Danos Médios / Derruba Pessoas (2 psi)", LIMITES_BLAST["Danos Médios / Derruba Pessoas (2 psi)"]),
-            ("Danos Graves / Ruptura Tímpano (5 psi)", LIMITES_BLAST["Danos Graves / Ruptura Tímpano (5 psi)"]),
-            ("Destruição Total / Ruptura Pulmão (10 psi)", LIMITES_BLAST["Destruição Total / Ruptura Pulmão (10 psi)"])
-        ]
-        
-        for nome, dados in zonas_ordem:
-            r = raios[nome]
-            # Círculos de Blast: Apenas contorno (stroke) para diferenciar de pluma tóxica
+        for nome in nomes_ordem:
+            raio = raios[nome]
+            dados_limite = LIMITES_BLAST[nome]
+            cor = dados_limite['cor']
+            
             folium.Circle(
-                [lat, lon],
-                radius=r,
-                color=dados['cor'],
-                weight=3,
+                location=[lat, lon],
+                radius=raio,
+                popup=f"{nome}<br>Sobrepressão: {dados_limite['psi']} psi ({dados_limite['bar']:.2f} bar)<br>Raio: {raio:.1f} m",
+                tooltip=f"{nome} - {raio:.1f} m",
+                color=cor,
                 fill=True,
-                fill_opacity=0.2,
-                tooltip=f"{nome}: {r:.0f}m ({dados['psi']} psi)"
+                fillColor=cor,
+                fillOpacity=0.3,
+                weight=2
             ).add_to(m)
         
-        st_folium(m, width=None, height=600)
+        # Marcador do ponto de origem
+        folium.Marker(
+            [lat, lon],
+            popup=f"Origem da Explosão<br>Substância: {substancia}<br>Massa: {massa:.1f} kg",
+            tooltip="Ponto de Origem",
+            icon=folium.Icon(color="red", icon="exclamation-triangle", prefix="fa")
+        ).add_to(m)
+        
+        # Exibir mapa
+        st_folium(m, width=700, height=500)
+        
+        # Tabela de resultados
+        st.markdown("#### Tabela de Zonas de Dano")
+        
+        df_resultados = pd.DataFrame({
+            'Zona de Dano': list(raios.keys()),
+            'Sobrepressão (psi)': [LIMITES_BLAST[nome]['psi'] for nome in raios.keys()],
+            'Sobrepressão (bar)': [LIMITES_BLAST[nome]['bar'] for nome in raios.keys()],
+            'Raio (m)': [raios[nome] for nome in raios.keys()],
+            'Descrição': [LIMITES_BLAST[nome]['desc'] for nome in raios.keys()]
+        })
+        
+        st.dataframe(df_resultados, use_container_width=True, hide_index=True)
+        
+        # Interpretação e recomendações
+        with st.expander("Interpretação dos Resultados e Recomendações Operacionais", expanded=False):
+            st.markdown(f"""
+            **Análise do Cenário:**
+            
+            - **Substância:** {substancia} ({dados_substancia['tipo']})
+            - **Massa da Nuvem:** {massa:.1f} kg
+            - **Energia Equivalente:** {kg_tnt:.2f} kg de TNT
+            - **Eficiência de Explosão:** {eficiencia*100:.1f}% (afetada pelo confinamento: {confinamento})
+            
+            **Zonas de Risco:**
+            
+            """)
+            
+            for nome in nomes_ordem:
+                raio = raios[nome]
+                dados_limite = LIMITES_BLAST[nome]
+                st.markdown(f"- **{nome}:** Raio de {raio:.1f} m ({dados_limite['bar']:.2f} bar / {dados_limite['psi']:.1f} psi)")
+                st.markdown(f"  - {dados_limite['desc']}")
+            
+            st.markdown("""
+            
+            **Recomendações Operacionais:**
+            
+            1. **Evacuação Imediata:** Todas as pessoas dentro da zona de 0.5 psi devem ser evacuadas imediatamente.
+            
+            2. **Zona de Exclusão:** Estabelecer perímetro de segurança mínimo igual ao maior raio calculado.
+            
+            3. **Proteção de Estruturas Críticas:** Identificar estruturas críticas (hospitais, escolas, usinas) 
+               dentro das zonas de dano e avaliar necessidade de reforço ou evacuação preventiva.
+            
+            4. **Planejamento de Resposta:** Coordenar com equipes de emergência para estabelecer rotas de fuga 
+               que evitem as zonas de maior risco.
+            
+            5. **Monitoramento:** Implementar sistema de detecção de gás e monitoramento meteorológico para 
+               avaliar mudanças nas condições que possam alterar o cenário.
+            
+            **Aviso Importante:** Este modelo é uma ferramenta de apoio à decisão. Os resultados devem ser 
+            validados com medições de campo e considerações específicas do local. Fatores como topografia, 
+            condições meteorológicas e geometria real da nuvem podem alterar significativamente os resultados.
+            """)

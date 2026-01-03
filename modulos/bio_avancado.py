@@ -7,6 +7,14 @@ import math
 # =============================================================================
 # 1. BANCO DE DADOS: AGENTES BIOLÓGICOS COM PARÂMETROS SEIR-A
 # =============================================================================
+# Modelo SEIR-A: Susceptible-Exposed-Infectious (Symptomatic)-Asymptomatic-Recovered
+# Baseado em: Kermack-McKendrick Model, Epidemiologia Matemática Avançada
+# Parâmetros:
+# - R0: Número Reprodutivo Básico
+# - sigma: Taxa de progressão de exposto para infectado (1/tempo_incubacao)
+# - gamma: Taxa de recuperação (1/tempo_recuperacao)
+# - alpha: Redução de infectividade de assintomáticos (0-1)
+# - p_assintomatico: Proporção de infectados que permanecem assintomáticos
 AGENTES_BIO_AVANCADO = {
     "COVID-19 (SARS-CoV-2)": {
         "tipo": "Vírus (Coronavírus)",
@@ -87,11 +95,153 @@ AGENTES_BIO_AVANCADO = {
         "p_assintomatico": 0.3,
         "letalidade": 0.01,
         "desc": "Configure manualmente os parâmetros do agente."
+    },
+    "Influenza A (H1N1) Pandêmica": {
+        "tipo": "Vírus (Influenza)",
+        "R0": 1.8,
+        "sigma": 1/2,
+        "gamma": 1/7,
+        "alpha": 0.4,
+        "p_assintomatico": 0.3,
+        "letalidade": 0.01,
+        "desc": "Gripe pandêmica. Alta transmissibilidade. Pode causar colapso do sistema de saúde pelo volume de casos."
+    },
+    "MERS-CoV": {
+        "tipo": "Vírus (Coronavírus)",
+        "R0": 0.7,
+        "sigma": 1/5,
+        "gamma": 1/14,
+        "alpha": 0.3,
+        "p_assintomatico": 0.2,
+        "letalidade": 0.35,
+        "desc": "Síndrome Respiratória do Oriente Médio. Alta letalidade. Transmissão limitada pessoa-pessoa."
+    },
+    "SARS-CoV-1": {
+        "tipo": "Vírus (Coronavírus)",
+        "R0": 2.5,
+        "sigma": 1/5,
+        "gamma": 1/10,
+        "alpha": 0.2,
+        "p_assintomatico": 0.1,
+        "letalidade": 0.10,
+        "desc": "Síndrome Respiratória Aguda Grave. Contida em 2003. Alta letalidade em idosos."
+    },
+    "Norovírus": {
+        "tipo": "Vírus",
+        "R0": 4.0,
+        "sigma": 1/1,
+        "gamma": 1/2,
+        "alpha": 0.3,
+        "p_assintomatico": 0.2,
+        "letalidade": 0.001,
+        "desc": "Altamente contagioso. Causa gastroenterite severa. Resistente a desinfetantes. Contaminação de alimentos."
+    },
+    "Rotavírus": {
+        "tipo": "Vírus",
+        "R0": 3.5,
+        "sigma": 1/2,
+        "gamma": 1/5,
+        "alpha": 0.4,
+        "p_assintomatico": 0.3,
+        "letalidade": 0.001,
+        "desc": "Causa gastroenterite severa em crianças. Altamente contagioso. Vacina disponível."
+    },
+    "Shigella dysenteriae": {
+        "tipo": "Bactéria",
+        "R0": 2.5,
+        "sigma": 1/2,
+        "gamma": 1/7,
+        "alpha": 0.2,
+        "p_assintomatico": 0.1,
+        "letalidade": 0.10,
+        "desc": "Disenteria bacilar. Contaminação fecal-oral. Requer poucas bactérias para infectar. Risco de contaminação de água."
+    },
+    "Salmonella Typhi": {
+        "tipo": "Bactéria",
+        "R0": 2.8,
+        "sigma": 1/10,
+        "gamma": 1/14,
+        "alpha": 0.3,
+        "p_assintomatico": 0.2,
+        "letalidade": 0.15,
+        "desc": "Febre Tifoide. Contaminação de água e alimentos. Portadores assintomáticos podem transmitir por meses."
+    },
+    "Cólera (Vibrio cholerae)": {
+        "tipo": "Bactéria",
+        "R0": 2.5,
+        "sigma": 1/2,
+        "gamma": 1/5,
+        "alpha": 0.2,
+        "p_assintomatico": 0.1,
+        "letalidade": 0.50,
+        "desc": "Ameaça à água potável. Diarreia severa leva à morte por desidratação em horas. Contágio fecal-oral."
+    },
+    "Difteria (Corynebacterium diphtheriae)": {
+        "tipo": "Bactéria",
+        "R0": 2.0,
+        "sigma": 1/5,
+        "gamma": 1/14,
+        "alpha": 0.3,
+        "p_assintomatico": 0.2,
+        "letalidade": 0.10,
+        "desc": "Transmissão por gotículas. Forma pseudomembrana na garganta. Vacina disponível (DTP)."
+    },
+    "Coqueluche (Bordetella pertussis)": {
+        "tipo": "Bactéria",
+        "R0": 5.5,
+        "sigma": 1/7,
+        "gamma": 1/21,
+        "alpha": 0.4,
+        "p_assintomatico": 0.3,
+        "letalidade": 0.001,
+        "desc": "Tosse convulsa. Altamente contagiosa. Perigosa para bebês. Vacina disponível (DTP)."
+    },
+    "Rubéola": {
+        "tipo": "Vírus",
+        "R0": 6.0,
+        "sigma": 1/14,
+        "gamma": 1/7,
+        "alpha": 0.5,
+        "p_assintomatico": 0.5,
+        "letalidade": 0.001,
+        "desc": "Altamente contagiosa. Perigosa para fetos (síndrome da rubéola congênita). Vacina disponível (MMR)."
+    },
+    "Caxumba": {
+        "tipo": "Vírus",
+        "R0": 4.5,
+        "sigma": 1/16,
+        "gamma": 1/10,
+        "alpha": 0.3,
+        "p_assintomatico": 0.3,
+        "letalidade": 0.001,
+        "desc": "Parotidite. Altamente contagiosa. Pode causar orquite e meningite. Vacina disponível (MMR)."
+    },
+    "Varicela (Catapora)": {
+        "tipo": "Vírus",
+        "R0": 8.0,
+        "sigma": 1/14,
+        "gamma": 1/10,
+        "alpha": 0.2,
+        "p_assintomatico": 0.1,
+        "letalidade": 0.001,
+        "desc": "Altamente contagiosa. Transmissão por gotículas e contato direto. Vacina disponível."
+    },
+    "Mononucleose (EBV)": {
+        "tipo": "Vírus",
+        "R0": 1.5,
+        "sigma": 1/30,
+        "gamma": 1/21,
+        "alpha": 0.6,
+        "p_assintomatico": 0.5,
+        "letalidade": 0.001,
+        "desc": "Doença do beijo. Transmissão por saliva. Alta proporção de assintomáticos. Incapacitante."
     }
 }
 
 # Persistência em Superfícies (Taxa de Decaimento k em 1/hora)
-# Fonte: Estudos de laboratório (van Doremalen, Kampf, etc.)
+# Fonte: Estudos de laboratório (van Doremalen et al., Kampf et al., etc.)
+# Modelo: C(t) = C₀ × exp(-k × t)
+# Onde k é ajustado por umidade e temperatura
 PERSISTENCIA_FOMITES = {
     "Aço Inoxidável": {
         "k_base": 0.05,  # 1/hora (base)
@@ -128,10 +278,42 @@ PERSISTENCIA_FOMITES = {
         "fator_umidade": 1.0,
         "fator_temp": 1.0,
         "desc": "Superfície antimicrobiana natural. Persistência muito baixa."
+    },
+    "Alumínio": {
+        "k_base": 0.06,
+        "fator_umidade": 0.85,
+        "fator_temp": 1.25,
+        "desc": "Superfície comum em equipamentos. Persistência moderada."
+    },
+    "Borracha/Silicone": {
+        "k_base": 0.05,
+        "fator_umidade": 0.9,
+        "fator_temp": 1.2,
+        "desc": "Equipamentos médicos, selos. Persistência alta."
+    },
+    "Madeira": {
+        "k_base": 0.12,
+        "fator_umidade": 0.4,
+        "fator_temp": 1.6,
+        "desc": "Móveis, estruturas. Absorve umidade. Persistência baixa."
+    },
+    "Aço Galvanizado": {
+        "k_base": 0.04,
+        "fator_umidade": 0.85,
+        "fator_temp": 1.3,
+        "desc": "Estruturas, dutos. Persistência alta."
+    },
+    "Cerâmica/Azulejo": {
+        "k_base": 0.03,
+        "fator_umidade": 0.95,
+        "fator_temp": 1.1,
+        "desc": "Pisos, paredes. Superfície lisa. Persistência muito alta."
     }
 }
 
-# Eficácia de NPIs (Non-Pharmaceutical Interventions)
+# Eficácia de NPIs (Non-Pharmaceutical Interventions - Intervenções Não-Farmacológicas)
+# Baseado em: Cochrane Reviews, estudos de efetividade de medidas de controle
+# Valores representam redução percentual na taxa de transmissão (0-1)
 NPIS = {
     "Nenhuma Intervenção": {
         "reducao_transmissao": 0.0,
@@ -160,6 +342,22 @@ NPIS = {
     "Combinação (PFF2 + Distanciamento)": {
         "reducao_transmissao": 0.85,
         "desc": "Máscaras PFF2 + distanciamento social."
+    },
+    "Ventilação Mecânica (6 ACH)": {
+        "reducao_transmissao": 0.4,
+        "desc": "Ventilação adequada reduz aerossóis suspensos. 6 trocas de ar por hora."
+    },
+    "Filtros HEPA": {
+        "reducao_transmissao": 0.6,
+        "desc": "Filtros de alta eficiência removem partículas do ar. Eficaz contra aerossóis."
+    },
+    "Barreiras Físicas (Acrílico)": {
+        "reducao_transmissao": 0.3,
+        "desc": "Barreiras físicas reduzem transmissão por gotículas grandes."
+    },
+    "Hygiene de Mãos Rigorosa": {
+        "reducao_transmissao": 0.2,
+        "desc": "Lavagem frequente de mãos reduz transmissão por fômites."
     }
 }
 
@@ -335,68 +533,99 @@ def calcular_janela_risco(superficies, umidade, temperatura):
 # 3. INTERFACE VISUAL
 # =============================================================================
 def renderizar():
-    st.markdown("### ☣️ Defesa Biológica Avançada - Modelo SEIR-A")
-    st.markdown("Simulação epidemiológica avançada com transmissão assintomática e análise de persistência em superfícies (fômites).")
+    st.title("Defesa Biológica Avançada - Modelo SEIR-A")
+    st.markdown("**Simulação epidemiológica avançada com transmissão assintomática e análise de persistência em superfícies (fômites)**")
     st.markdown("---")
 
     # --- GUIA DIDÁTICO ---
-    with st.expander("📖 O que é o Modelo SEIR-A?", expanded=True):
+    with st.expander("Fundamentos do Modelo SEIR-A", expanded=True):
         st.markdown("""
-        **O Modelo SEIR-A** é uma evolução do modelo SIR clássico, incluindo:
+        #### O Modelo SEIR-A
+        
+        O Modelo SEIR-A é uma evolução do modelo SIR clássico, desenvolvido para capturar características importantes de doenças infecciosas modernas:
         
         **Estados da População:**
         - **S (Suscetíveis):** Pessoas em risco de contrair a doença
-        - **E (Expostos):** Infectados, mas ainda no período de incubação (não transmitem ainda)
+        - **E (Expostos):** Pessoas infectadas, mas ainda no período de incubação (não transmitem ainda)
         - **I (Infectados Sintomáticos):** Doentes com sintomas, transmitem ativamente
-        - **A (Assintomáticos):** Infectados sem sintomas, mas **TAMBÉM TRANSMITEM** (invisíveis!)
-        - **R (Recuperados/Removidos):** Imunes ou falecidos
+        - **A (Assintomáticos):** Infectados sem sintomas, mas também transmitem (transmissão silenciosa)
+        - **R (Recuperados/Removidos):** Pessoas que se recuperaram (ou faleceram) e não podem mais ser infectadas
         
-        **Por que Assintomáticos são Críticos:**
-        - Eles são **"invisíveis"** ao sistema de saúde
-        - A **"onda invisível"** (assintomáticos) cresce ANTES da "onda hospitalar" (sintomáticos)
-        - Por isso surtos explodem rapidamente: quando detectamos casos sintomáticos, já há muitos assintomáticos
+        #### Por que Assintomáticos são Críticos?
         
-        **O que são Fômites?**
-        - Superfícies contaminadas (maçanetas, mesas, roupas)
-        - O vírus/bactéria sobrevive por horas ou dias dependendo do material
-        - Toque na superfície → mão → mucosas = infecção
+        A transmissão assintomática é um dos maiores desafios no controle de epidemias:
+        - **Invisibilidade:** Assintomáticos não são detectados pelo sistema de saúde
+        - **Onda Invisível:** A população de assintomáticos cresce antes da população de sintomáticos
+        - **Detecção Tardia:** Quando casos sintomáticos são detectados, já existe uma grande população de assintomáticos
+        - **Transmissão Contínua:** Assintomáticos continuam transmitindo enquanto não são identificados
         
-        **Janela de Risco:**
-        - Tempo que um local deve permanecer interditado após contaminação
-        - Baseado no tempo para 99% de redução do agente nas superfícies
+        #### O que são Fômites?
+        
+        Fômites são superfícies ou objetos inanimados que podem ser contaminados com agentes patogênicos:
+        - **Exemplos:** Maçanetas, mesas, roupas, equipamentos médicos, superfícies de toque
+        - **Persistência:** O agente biológico sobrevive por horas ou dias dependendo do material e condições ambientais
+        - **Rota de Transmissão:** Contato com superfície contaminada → mão → mucosas (olhos, nariz, boca) = infecção
+        
+        #### Janela de Risco
+        
+        A janela de risco é o tempo que um local deve permanecer interditado após contaminação:
+        - Baseado no tempo necessário para 99% de redução do agente nas superfícies
+        - Varia significativamente dependendo do tipo de superfície e condições ambientais
+        - Superfícies antimicrobianas (como cobre) têm janelas de risco muito curtas
+        - Superfícies porosas ou que absorvem umidade têm janelas de risco mais longas
         """)
 
-    with st.expander("🔬 Parâmetros do Modelo", expanded=False):
+    with st.expander("Parâmetros do Modelo SEIR-A", expanded=False):
         st.markdown("""
-        **R₀ (Número Reprodutivo Básico):** Quantas pessoas um infectado contamina em média.
-        - R₀ < 1: Doença desaparece
-        - R₀ > 1: Doença se espalha
+        #### Parâmetros Epidemiológicos
         
-        **σ (Sigma):** Inverso do tempo de incubação. Quanto maior, mais rápido aparecem sintomas.
+        **R₀ (Número Reprodutivo Básico):**
+        - Quantas pessoas um infectado contamina em média, em uma população totalmente suscetível
+        - R₀ < 1: Doença desaparece (cada infectado contamina menos de 1 pessoa)
+        - R₀ = 1: Doença estável (cada infectado contamina exatamente 1 pessoa)
+        - R₀ > 1: Doença se espalha (cada infectado contamina mais de 1 pessoa)
+        - Quanto maior o R₀, mais difícil é controlar a epidemia
         
-        **γ (Gamma):** Inverso do tempo de recuperação. Quanto maior, mais rápido as pessoas se recuperam.
+        **σ (Sigma) - Taxa de Progressão:**
+        - Inverso do tempo médio de incubação (1/tempo_incubacao)
+        - Quanto maior, mais rápido as pessoas passam de expostas para infectadas
+        - Exemplo: σ = 1/5 significa que o tempo médio de incubação é 5 dias
         
-        **α (Alpha):** Redução de infectividade de assintomáticos (0-1). 
-        - α = 0.5 significa que assintomáticos transmitem 50% menos que sintomáticos.
+        **γ (Gamma) - Taxa de Recuperação:**
+        - Inverso do tempo médio de recuperação (1/tempo_recuperacao)
+        - Quanto maior, mais rápido as pessoas se recuperam
+        - Exemplo: γ = 1/7 significa que o tempo médio de recuperação é 7 dias
         
-        **p (Proporção Assintomática):** Quantos infectados ficam sem sintomas.
+        **α (Alpha) - Redução de Infectividade de Assintomáticos:**
+        - Fator de redução da capacidade de transmissão de assintomáticos (0-1)
+        - α = 0.0: Assintomáticos não transmitem
+        - α = 0.5: Assintomáticos transmitem 50% menos que sintomáticos
+        - α = 1.0: Assintomáticos transmitem igual aos sintomáticos
+        - Geralmente, assintomáticos transmitem menos porque não tossem/espirram tanto
+        
+        **p (Proporção Assintomática):**
+        - Proporção de infectados que permanecem assintomáticos durante toda a infecção
+        - p = 0.0: Todos desenvolvem sintomas
+        - p = 0.3: 30% permanecem assintomáticos
+        - p = 1.0: Todos permanecem assintomáticos (hipotético)
+        - Doenças com alta proporção de assintomáticos são mais difíceis de controlar
         """)
 
     st.markdown("---")
 
     # --- SEÇÃO 1: AGENTE BIOLÓGICO ---
-    st.subheader("1️⃣ Agente Biológico")
+    st.subheader("1. Seleção do Agente Biológico")
     
     agente_nome = st.selectbox(
-        "Selecione o agente:",
+        "Selecione o Agente Biológico:",
         list(AGENTES_BIO_AVANCADO.keys()),
-        help="Escolha o patógeno para simulação."
+        help="Escolha o patógeno para simulação. Consulte classificações CDC/WHO para identificação."
     )
     
     agente_dados = AGENTES_BIO_AVANCADO[agente_nome]
     
     if agente_nome == "OUTRAS (Entrada Manual)":
-        st.markdown("**⚙️ Configuração Manual:**")
+        st.markdown("**Configuração Manual de Parâmetros:**")
         col_man1, col_man2 = st.columns(2)
         
         with col_man1:
@@ -419,18 +648,24 @@ def renderizar():
             "desc": "Agente configurado manualmente."
         }
     else:
-        st.info(f"ℹ️ **{agente_nome}**\n\n{agente_dados['desc']}")
+        st.info(f"**{agente_nome}**\n\n{agente_dados['desc']}")
         
-        col_prop1, col_prop2, col_prop3, col_prop4 = st.columns(4)
-        col_prop1.metric("R₀", f"{agente_dados['R0']:.2f}", "Reprodutividade")
-        col_prop2.metric("Tempo Incubação", f"{1/agente_dados['sigma']:.1f} dias")
-        col_prop3.metric("Tempo Recuperação", f"{1/agente_dados['gamma']:.1f} dias")
-        col_prop4.metric("Assintomáticos", f"{agente_dados['p_assintomatico']*100:.0f}%")
+        col_prop1, col_prop2, col_prop3, col_prop4, col_prop5 = st.columns(5)
+        col_prop1.metric("R₀", f"{agente_dados['R0']:.2f}", 
+                        help="Número reprodutivo básico")
+        col_prop2.metric("Tempo Incubação", f"{1/agente_dados['sigma']:.1f} dias",
+                        help="Tempo médio entre exposição e aparecimento de sintomas")
+        col_prop3.metric("Tempo Recuperação", f"{1/agente_dados['gamma']:.1f} dias",
+                        help="Tempo médio de recuperação")
+        col_prop4.metric("Assintomáticos", f"{agente_dados['p_assintomatico']*100:.0f}%",
+                        help="Proporção de infectados que permanecem assintomáticos")
+        col_prop5.metric("Letalidade", f"{agente_dados['letalidade']*100:.1f}%",
+                        help="Taxa de letalidade sem tratamento adequado")
 
     st.markdown("---")
 
     # --- SEÇÃO 2: CENÁRIO EPIDEMIOLÓGICO ---
-    st.subheader("2️⃣ Cenário Epidemiológico")
+    st.subheader("2. Cenário Epidemiológico")
     
     col_cen1, col_cen2 = st.columns(2)
     
@@ -461,53 +696,61 @@ def renderizar():
         )
     
     with col_cen2:
-        st.markdown("**🛡️ Intervenções Não-Farmacológicas (NPIs):**")
+        st.markdown("**Intervenções Não-Farmacológicas (NPIs):**")
         
         npi_selecionada = st.selectbox(
             "Medida de Controle:",
             list(NPIS.keys()),
-            help="Medidas para reduzir transmissão"
+            help="Medidas para reduzir transmissão. Baseadas em evidências científicas."
         )
         
         npi_dados = NPIS[npi_selecionada]
-        st.info(f"📋 **{npi_selecionada}**\n\n{npi_dados['desc']}\n\n**Redução de Transmissão:** {npi_dados['reducao_transmissao']*100:.0f}%")
+        st.info(f"**{npi_selecionada}**\n\n{npi_dados['desc']}\n\n**Redução de Transmissão:** {npi_dados['reducao_transmissao']*100:.0f}%")
         
         # Opção de combinar NPIs
         usar_combinacao = st.checkbox(
             "Aplicar múltiplas intervenções simultaneamente",
-            help="Marque para combinar diferentes medidas"
+            help="Marque para combinar diferentes medidas. A eficácia combinada é calculada multiplicativamente."
         )
         
         if usar_combinacao:
             npi_adicional = st.selectbox(
                 "Segunda Intervenção:",
                 [k for k in NPIS.keys() if k != npi_selecionada],
-                help="Adicionar outra medida"
+                help="Adicionar outra medida de controle"
             )
+            # Eficácia combinada: 1 - (1 - r1) × (1 - r2)
             reducao_total = 1 - (1 - npi_dados['reducao_transmissao']) * (1 - NPIS[npi_adicional]['reducao_transmissao'])
-            st.success(f"✅ **Redução Combinada:** {reducao_total*100:.0f}%")
+            st.success(f"**Redução Combinada:** {reducao_total*100:.0f}%")
         else:
             reducao_total = npi_dados['reducao_transmissao']
 
     st.markdown("---")
 
     # --- SEÇÃO 3: ANÁLISE DE FÔMITES ---
-    st.subheader("3️⃣ Persistência em Superfícies (Fômites)")
+    st.subheader("3. Persistência em Superfícies (Fômites)")
     
     st.markdown("**Selecione as superfícies presentes no ambiente:**")
     
     superficies_selecionadas = {}
-    col_fom1, col_fom2 = st.columns(2)
+    col_fom1, col_fom2, col_fom3 = st.columns(3)
     
     with col_fom1:
         usar_aco = st.checkbox("Aço Inoxidável", value=True)
-        usar_plastico = st.checkbox("Plástico", value=True)
+        usar_plastico = st.checkbox("Plástico (Polipropileno)", value=True)
         usar_papel = st.checkbox("Papel/Cartão", value=False)
+        usar_tecido = st.checkbox("Tecido/Algodão", value=False)
     
     with col_fom2:
-        usar_tecido = st.checkbox("Tecido/Algodão", value=False)
         usar_vidro = st.checkbox("Vidro", value=False)
         usar_cobre = st.checkbox("Cobre", value=False)
+        usar_aluminio = st.checkbox("Alumínio", value=False)
+        usar_borracha = st.checkbox("Borracha/Silicone", value=False)
+    
+    with col_fom3:
+        usar_madeira = st.checkbox("Madeira", value=False)
+        usar_aco_galv = st.checkbox("Aço Galvanizado", value=False)
+        usar_ceramica = st.checkbox("Cerâmica/Azulejo", value=False)
     
     if usar_aco:
         superficies_selecionadas["Aço Inoxidável"] = PERSISTENCIA_FOMITES["Aço Inoxidável"]
@@ -521,9 +764,19 @@ def renderizar():
         superficies_selecionadas["Vidro"] = PERSISTENCIA_FOMITES["Vidro"]
     if usar_cobre:
         superficies_selecionadas["Cobre"] = PERSISTENCIA_FOMITES["Cobre"]
+    if usar_aluminio:
+        superficies_selecionadas["Alumínio"] = PERSISTENCIA_FOMITES["Alumínio"]
+    if usar_borracha:
+        superficies_selecionadas["Borracha/Silicone"] = PERSISTENCIA_FOMITES["Borracha/Silicone"]
+    if usar_madeira:
+        superficies_selecionadas["Madeira"] = PERSISTENCIA_FOMITES["Madeira"]
+    if usar_aco_galv:
+        superficies_selecionadas["Aço Galvanizado"] = PERSISTENCIA_FOMITES["Aço Galvanizado"]
+    if usar_ceramica:
+        superficies_selecionadas["Cerâmica/Azulejo"] = PERSISTENCIA_FOMITES["Cerâmica/Azulejo"]
     
     if not superficies_selecionadas:
-        st.warning("⚠️ Selecione pelo menos uma superfície para análise de fômites.")
+        st.warning("Selecione pelo menos uma superfície para análise de fômites.")
     
     col_amb1, col_amb2 = st.columns(2)
     
@@ -550,13 +803,13 @@ def renderizar():
     st.markdown("---")
 
     # --- BOTÃO DE CÁLCULO ---
-    if st.button("🧬 Simular Epidemia e Fômites", type="primary", use_container_width=True):
+    if st.button("SIMULAR EPIDEMIA E ANÁLISE DE FÔMITES", type="primary", use_container_width=True):
         st.session_state['bio_avancado_calc'] = True
 
     if st.session_state.get('bio_avancado_calc', False):
         # Verificar se R0 > 0 (doença transmissível)
         if agente_dados["R0"] == 0:
-            st.warning("⚠️ **AGENTE NÃO TRANSMISSÍVEL:** Este agente não se espalha pessoa-pessoa. "
+            st.warning("**AGENTE NÃO TRANSMISSÍVEL:** Este agente não se espalha pessoa-pessoa. "
                       "Use o módulo de Dispersão Biológica para análise de liberação por aerossol.")
         else:
             # Calcular modelo SEIR-A
@@ -566,7 +819,7 @@ def renderizar():
                 )
             
             st.markdown("---")
-            st.markdown("### 📊 Resultados da Simulação Epidemiológica")
+            st.markdown("### Resultados da Simulação Epidemiológica")
             
             # Métricas principais
             pico_casos_ativos = np.max(resultado_seira["casos_ativos"])
@@ -609,11 +862,12 @@ def renderizar():
                 dia_pico_sem = resultado_sem_npi["tempo"][np.argmax(resultado_sem_npi["casos_ativos"])]
                 atraso_pico = dia_pico - dia_pico_sem
                 
-                st.success(f"✅ **IMPACTO DAS NPIs:** Com {npi_selecionada}, o pico de casos será reduzido em **{reducao_pico:.0f}%** "
-                          f"e atrasado em **{atraso_pico:.0f} dias**.")
+                st.success(f"**IMPACTO DAS NPIs:** Com {npi_selecionada}, o pico de casos será reduzido em **{reducao_pico:.0f}%** "
+                          f"e atrasado em **{atraso_pico:.0f} dias**. Isso demonstra a importância das medidas de controle.")
             
             # Gráfico de Curvas Sobrepostas
-            st.markdown("#### 📈 Evolução da Epidemia (Onda Invisível vs Onda Hospitalar)")
+            st.markdown("---")
+            st.markdown("#### Evolução Temporal da Epidemia (Onda Invisível vs Onda Hospitalar)")
             
             df_grafico = pd.DataFrame({
                 'Dias': resultado_seira["tempo"],
@@ -646,13 +900,14 @@ def renderizar():
             
             st.altair_chart(chart, use_container_width=True)
             
-            st.caption("💡 **A 'Onda Invisível' (Assintomáticos - linha roxa tracejada) cresce ANTES da 'Onda Hospitalar' "
-                      "(Sintomáticos - linha vermelha). Por isso surtos explodem rapidamente!**")
+            st.caption("**Interpretação:** A 'Onda Invisível' (Assintomáticos - linha roxa tracejada) cresce ANTES da 'Onda Hospitalar' "
+                      "(Sintomáticos - linha vermelha). Por isso surtos explodem rapidamente quando detectamos casos sintomáticos, "
+                      "já existe uma grande população de assintomáticos transmitindo silenciosamente.")
             
             # Dashboard de Fômites
             if superficies_selecionadas:
                 st.markdown("---")
-                st.markdown("#### 🧪 Dashboard de Fômites - Persistência em Superfícies")
+                st.markdown("#### Dashboard de Fômites - Persistência em Superfícies")
                 
                 resultados_fomites = []
                 
@@ -673,7 +928,8 @@ def renderizar():
                 # Janela de Risco
                 janela_risco = calcular_janela_risco(superficies_selecionadas, umidade, temperatura)
                 
-                st.markdown("#### ⏱️ Janela de Risco (Tempo de Interdição)")
+                st.markdown("---")
+                st.markdown("#### Janela de Risco (Tempo de Interdição)")
                 
                 col_jan1, col_jan2 = st.columns(2)
                 
@@ -681,20 +937,25 @@ def renderizar():
                     col_jan1.metric(
                         "Tempo de Interdição",
                         f"{janela_risco:.1f} horas",
-                        f"{janela_risco/24:.1f} dias"
+                        f"{janela_risco/24:.1f} dias",
+                        help="Tempo necessário para 99% de redução do agente nas superfícies"
                     )
                 
                 with col_jan2:
                     if janela_risco < 24:
-                        st.success("✅ **Interdição Curta:** Local pode ser liberado após descontaminação rápida.")
+                        st.success("**Interdição Curta:** Local pode ser liberado após descontaminação rápida. "
+                                  "Superfícies antimicrobianas ou condições ambientais favoráveis reduzem o tempo.")
                     elif janela_risco < 72:
-                        st.warning("⚠️ **Interdição Moderada:** Local deve permanecer fechado por alguns dias.")
+                        st.warning("**Interdição Moderada:** Local deve permanecer fechado por alguns dias. "
+                                  "Descontaminação ativa pode reduzir o tempo de interdição.")
                     else:
-                        st.error("🚨 **Interdição Longa:** Local deve permanecer fechado por mais de 3 dias. "
-                                "Considere descontaminação ativa (químicos, UV).")
+                        st.error("**Interdição Longa:** Local deve permanecer fechado por mais de 3 dias. "
+                                "Considere descontaminação ativa (hipoclorito de sódio, peróxido de hidrogênio, radiação UV) "
+                                "para reduzir o tempo de interdição.")
                 
                 # Gráfico de Decaimento
-                st.markdown("#### 📉 Decaimento de Viabilidade ao Longo do Tempo")
+                st.markdown("---")
+                st.markdown("#### Decaimento de Viabilidade ao Longo do Tempo")
                 
                 tempos_horas = np.linspace(0, min(janela_risco * 1.5, 168), 100)  # Até 7 dias ou 1.5x janela
                 
@@ -719,26 +980,67 @@ def renderizar():
                 
                 st.altair_chart(chart_decaimento, use_container_width=True)
                 
-                st.caption("💡 **Gráfico em escala logarítmica:** Mostra como diferentes superfícies têm taxas de decaimento distintas. "
-                          "Cobre (antimicrobiano) decai muito rápido, enquanto vidro mantém o agente por mais tempo.")
+                st.caption("**Gráfico em escala logarítmica:** Mostra como diferentes superfícies têm taxas de decaimento distintas. "
+                          "Superfícies antimicrobianas (como cobre) decaem muito rápido, enquanto superfícies não porosas "
+                          "(como vidro e cerâmica) mantêm o agente por mais tempo.")
             
             # Recomendações
             st.markdown("---")
-            st.markdown("#### 💡 Recomendações Táticas")
+            st.markdown("### Recomendações Operacionais")
             
             if pico_casos_ativos > populacao * 0.1:
-                st.error("🚨 **SURTO CRÍTICO:** Mais de 10% da população será infectada simultaneamente. "
-                        "Sistema de saúde será sobrecarregado. Implemente medidas drásticas de contenção.")
+                st.error("**SURTO CRÍTICO:** Mais de 10% da população será infectada simultaneamente. "
+                        "O sistema de saúde será sobrecarregado. Implemente medidas drásticas de contenção:")
+                st.markdown("""
+                1. Lockdown total ou parcial imediato
+                2. Isolamento rigoroso de casos e contatos
+                3. Testagem em massa para identificar assintomáticos
+                4. Preparação de centros de tratamento temporários
+                5. Racionamento de recursos hospitalares
+                6. Comunicação clara com a população sobre a gravidade
+                """)
             elif pico_casos_ativos > populacao * 0.05:
-                st.warning("⚠️ **SURTO MODERADO:** 5-10% da população será infectada. "
-                          "Prepare recursos hospitalares e mantenha NPIs rigorosas.")
+                st.warning("**SURTO MODERADO:** 5-10% da população será infectada. "
+                          "Prepare recursos hospitalares e mantenha NPIs rigorosas:")
+                st.markdown("""
+                1. Manter medidas de distanciamento social
+                2. Uso obrigatório de máscaras de alta eficiência (PFF2/N95)
+                3. Testagem regular para detecção precoce
+                4. Preparação de leitos adicionais
+                5. Monitoramento contínuo da situação
+                """)
             else:
-                st.info("✅ **SURTO CONTROLADO:** Com as medidas implementadas, o surto permanece em níveis gerenciáveis.")
+                st.info("**SURTO CONTROLADO:** Com as medidas implementadas, o surto permanece em níveis gerenciáveis. "
+                       "Mantenha as medidas preventivas para evitar recrudescimento.")
             
             if pico_casos_assintomaticos > pico_casos_sintomaticos:
-                st.warning("⚠️ **ALERTA DE TRANSMISSÃO ASSINTOMÁTICA:** A 'onda invisível' (assintomáticos) é maior que a 'onda hospitalar'. "
-                          "Testagem em massa é essencial para detectar casos antes que desenvolvam sintomas.")
+                st.warning("**ALERTA DE TRANSMISSÃO ASSINTOMÁTICA:** A 'onda invisível' (assintomáticos) é maior que a 'onda hospitalar' (sintomáticos). "
+                          "Testagem em massa é essencial para detectar casos antes que desenvolvam sintomas e interromper cadeias de transmissão.")
             
             if superficies_selecionadas and janela_risco > 72:
-                st.error("🚨 **JANELA DE RISCO LONGA:** O local deve permanecer interditado por mais de 3 dias. "
-                        "Considere descontaminação ativa (hipoclorito, peróxido de hidrogênio, radiação UV) para reduzir o tempo.")
+                st.error("**JANELA DE RISCO LONGA:** O local deve permanecer interditado por mais de 3 dias. "
+                        "Considere descontaminação ativa para reduzir o tempo:")
+                st.markdown("""
+                1. **Hipoclorito de Sódio (0.1-0.5%):** Eficaz contra a maioria dos vírus e bactérias
+                2. **Peróxido de Hidrogênio (3-6%):** Eficaz e menos corrosivo que hipoclorito
+                3. **Radiação UV-C:** Eficaz para descontaminação de superfícies e ar
+                4. **Álcool 70%:** Eficaz para descontaminação rápida de superfícies pequenas
+                5. **Vaporização de Peróxido de Hidrogênio:** Para descontaminação de ambientes inteiros
+                """)
+            
+            st.markdown("---")
+            st.markdown("### Considerações Técnicas")
+            st.info("""
+            **Limitações do Modelo:**
+            - O modelo assume população homogênea e não considera grupos de risco
+            - Não modela variações sazonais ou mudanças comportamentais ao longo do tempo
+            - Assume que as NPIs têm eficácia constante
+            - Não considera mutações do agente ou desenvolvimento de resistência
+            - Modelos mais complexos (SEIRS com imunidade temporária, modelos estocásticos) podem ser necessários para análises avançadas
+            
+            **Interpretação dos Resultados:**
+            - Os resultados são projeções baseadas em parâmetros estimados
+            - Condições reais podem variar significativamente
+            - Consulte epidemiologistas para análises detalhadas e estratégias de controle
+            - Combine múltiplas fontes de dados (vigilância epidemiológica, testagem, hospitalizações) para validação
+            """)

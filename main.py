@@ -47,65 +47,65 @@ if 'modulo_selecionado' not in st.session_state:
 
 # 1. ☢️ AMBIENTE RADIOLÓGICO E NUCLEAR
 with st.sidebar.expander("☢️ AMBIENTE RADIOLÓGICO E NUCLEAR", expanded=False):
-    if st.button("Irradiação de Ponto Fixo", key="radiologico", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Irradiação de Ponto Fixo", radiologico)
-    if st.button("Barreiras de Proteção", key="blindagem", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Barreiras de Proteção", blindagem)
-    if st.button("Cálculo de Dose Tática", key="rad_tatica", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Cálculo de Dose Tática", rad_tatica)
-    if st.button("Dispersão de Bomba Suja", key="nuclear_rdd", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Dispersão de Bomba Suja", nuclear_rdd)
+    if st.button("Irradiação Direta (Ponto Fixo)", key="radiologico", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Irradiação Direta (Ponto Fixo)", radiologico)
+    if st.button("Blindagem Radiológica (HVL)", key="blindagem", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Blindagem Radiológica (HVL)", blindagem)
+    if st.button("Dose Tática (Fallout)", key="rad_tatica", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Dose Tática (Fallout)", rad_tatica)
+    if st.button("RDD - Bomba Suja", key="nuclear_rdd", use_container_width=True):
+        st.session_state.modulo_selecionado = ("RDD - Bomba Suja", nuclear_rdd)
 
 # 2. 🧪 DINÂMICA QUÍMICA E GASES
 with st.sidebar.expander("🧪 DINÂMICA QUÍMICA E GASES", expanded=False):
-    if st.button("Dispersão Atmosférica", key="quimico_outdoor", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Dispersão Atmosférica", quimico_outdoor)
-    if st.button("Contaminação de Ambientes", key="quimico_indoor", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Contaminação de Ambientes", quimico_indoor)
-    if st.button("Gases Densos e Asfixiantes", key="gases_densos", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Gases Densos e Asfixiantes", gases_densos)
-    if st.button("Análise de Toxicidade e EPIs", key="toxicidade_avancada", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Análise de Toxicidade e EPIs", toxicidade_avancada)
+    if st.button("Dispersão Atmosférica (Gaussian Plume)", key="quimico_outdoor", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Dispersão Atmosférica (Gaussian Plume)", quimico_outdoor)
+    if st.button("Contaminação Indoor (Box Model)", key="quimico_indoor", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Contaminação Indoor (Box Model)", quimico_indoor)
+    if st.button("Gases Densos (Dense Gas)", key="gases_densos", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Gases Densos (Dense Gas)", gases_densos)
+    if st.button("Toxicidade Avançada (IDLH/APF)", key="toxicidade_avancada", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Toxicidade Avançada (IDLH/APF)", toxicidade_avancada)
 
 # 3. 🔥 INCÊNDIOS E EXPLOSÕES
 with st.sidebar.expander("🔥 INCÊNDIOS E EXPLOSÕES", expanded=False):
-    if st.button("Incêndio em Poça", key="pool_fire", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Incêndio em Poça", pool_fire)
-    if st.button("Dardo de Fogo", key="jet_fire", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Dardo de Fogo", jet_fire)
-    if st.button("Incêndio Repentino", key="flash_fire", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Incêndio Repentino", flash_fire)
-    if st.button("Ondas de Choque e VCE", key="vce", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Ondas de Choque e VCE", vce)
-    if st.button("Explosão (Onda de Choque)", key="explosao", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Explosão (Onda de Choque)", explosao)
-    if st.button("Catástrofe de Expansão (BLEVE)", key="bleve", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Catástrofe de Expansão (BLEVE)", bleve)
+    if st.button("Pool Fire", key="pool_fire", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Pool Fire", pool_fire)
+    if st.button("Jet Fire", key="jet_fire", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Jet Fire", jet_fire)
+    if st.button("Flash Fire", key="flash_fire", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Flash Fire", flash_fire)
+    if st.button("VCE (Vapor Cloud Explosion)", key="vce", use_container_width=True):
+        st.session_state.modulo_selecionado = ("VCE (Vapor Cloud Explosion)", vce)
+    if st.button("Explosão (Blast Wave)", key="explosao", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Explosão (Blast Wave)", explosao)
+    if st.button("BLEVE (Boiling Liquid Expanding Vapor Explosion)", key="bleve", use_container_width=True):
+        st.session_state.modulo_selecionado = ("BLEVE (Boiling Liquid Expanding Vapor Explosion)", bleve)
 
 # 4. ☣️ AMEAÇAS BIOLÓGICAS E EPIDEMIAS
 with st.sidebar.expander("☣️ AMEAÇAS BIOLÓGICAS E EPIDEMIAS", expanded=False):
-    if st.button("Simulador Epidemiológico", key="biologico", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Simulador Epidemiológico", biologico)
-    if st.button("Sobrevivência de Patógenos", key="bio_avancado", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Sobrevivência de Patógenos", bio_avancado)
-    if st.button("Segurança em Redes de Água", key="agua", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Segurança em Redes de Água", agua)
+    if st.button("Epidemiologia (SIR/SEIR-A)", key="biologico", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Epidemiologia (SIR/SEIR-A)", biologico)
+    if st.button("Persistência de Patógenos (Fômites)", key="bio_avancado", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Persistência de Patógenos (Fômites)", bio_avancado)
+    if st.button("Segurança Hídrica (Water Security)", key="agua", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Segurança Hídrica (Water Security)", agua)
 
 # 5. 🚑 INTELIGÊNCIA EM OPERAÇÕES E SAÚDE
 with st.sidebar.expander("🚑 INTELIGÊNCIA EM OPERAÇÕES E SAÚDE", expanded=False):
-    if st.button("Triagem e Carga de Vítimas", key="triage", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Triagem e Carga de Vítimas", triage)
-    if st.button("Corredor de Descontaminação", key="decon", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Corredor de Descontaminação", decon)
-    if st.button("Logística de Evacuação", key="fluxo_humano", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Logística de Evacuação", fluxo_humano)
-    if st.button("Saturação do Sistema de Saúde", key="colapso_hospitalar", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Saturação do Sistema de Saúde", colapso_hospitalar)
+    if st.button("START Triage", key="triage", use_container_width=True):
+        st.session_state.modulo_selecionado = ("START Triage", triage)
+    if st.button("DECON (Descontaminação)", key="decon", use_container_width=True):
+        st.session_state.modulo_selecionado = ("DECON (Descontaminação)", decon)
+    if st.button("Evacuação (Roteamento Ótimo)", key="fluxo_humano", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Evacuação (Roteamento Ótimo)", fluxo_humano)
+    if st.button("Colapso Hospitalar (M/M/s)", key="colapso_hospitalar", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Colapso Hospitalar (M/M/s)", colapso_hospitalar)
 
 # 6. 🛰️ COMANDO E TECNOLOGIA
 with st.sidebar.expander("🛰️ COMANDO E TECNOLOGIA", expanded=False):
-    if st.button("Reconhecimento Aéreo (Drone)", key="drone", use_container_width=True):
-        st.session_state.modulo_selecionado = ("Reconhecimento Aéreo (Drone)", drone)
+    if st.button("Reconhecimento Aéreo (UAV Survey)", key="drone", use_container_width=True):
+        st.session_state.modulo_selecionado = ("Reconhecimento Aéreo (UAV Survey)", drone)
 
 st.sidebar.markdown("---")
 st.sidebar.markdown("**Desenvolvido por Xanadu P&D**")
@@ -172,6 +172,19 @@ else:
     - **Soberania Tecnológica:** Uma ferramenta de Estado para o cidadão, ideal para agentes de Defesa Civil, Militares, Especialistas em Produtos Perigosos e Universidades.
     
     - **Acesso Universal:** Disponível para qualquer brasileiro que necessite de suporte técnico para salvar vidas e proteger o meio ambiente.
+    """)
+    
+    st.markdown("---")
+    
+    st.markdown("### Construção Colaborativa: Rede Nacional de Resposta a Emergências")
+    
+    st.markdown("""
+    A Xanadu P&D lidera a estruturação de uma proposta estratégica para a Chamada Pública MCTI/FINEP Centros Temáticos 2025. 
+    Estamos unindo Universidades, Corpos de Bombeiros e Defesa Civil para criar uma solução de soberania em defesa QBRN.
+    
+    Você bombeiro (militar ou civil), engenheiro ambiental, químico ou especialista em HazMat é peça fundamental. 
+    Sua experiência de campo pode moldar essa tecnologia. Para contribuir tecnicamente ou institucionalmente, entre em contato: 
+    **contato@xanadupesquisa.com.br**
     """)
     
     st.markdown("---")
