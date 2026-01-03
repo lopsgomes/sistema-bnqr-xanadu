@@ -1,0 +1,10 @@
+streamlit
+pandas
+numpy
+altair
+networkx
+folium
+scipy
+branca
+jinja2
+streamlit-folium
