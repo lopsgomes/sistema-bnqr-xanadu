@@ -7,4 +7,5 @@ folium
 scipy
 branca
 jinja2
+matplotlib
 streamlit-folium
