@@ -1,0 +1,17 @@
+streamlit
+pandas
+numpy
+altair
+networkx
+folium
+scipy
+branca
+jinja2
+matplotlib
+streamlit-folium
+google-genai
+openpyxl
+pillow
+python-dotenv
+tabulate
+tenacity
