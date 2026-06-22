@@ -417,20 +417,6 @@ else:
     
     st.markdown("---")
     
-    st.markdown("### Construção Colaborativa: Rede Nacional de Resposta a Emergências")
-    
-    st.markdown("""
-    A Xanadu P&D propõe a estruturação de uma proposta estratégica para a Chamada Pública MCTI/FINEP Centros Temáticos 2025. 
-    Estamos unindo Universidades, Corpos de Bombeiros e Defesa Civil para criar uma solução de soberania em defesa QBRN através 
-    do uso de tecnologias e pela implementação de Brigadas de Produtos Perigosos em todas as universidades públicas do país.
-    
-    Você, bombeiro (militar ou civil), engenheiro ambiental, militar, biólogo, físico, químico ou especialista em HazMat é peça fundamental. 
-    Sua experiência de campo pode moldar essa tecnologia. Para contribuir tecnicamente ou institucionalmente, entre em contato através do 
-    e-mail **contato@xanadupesquisa.com.br** ou acessando **www.xanadupesquisa.com.br**
-    """)
-    
-    st.markdown("---")
-    
     st.markdown("### Compromisso com o Brasil e Propriedade Intelectual")
     
     st.markdown("""
